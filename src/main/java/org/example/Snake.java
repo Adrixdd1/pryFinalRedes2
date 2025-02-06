@@ -31,7 +31,7 @@ public class Snake extends JFrame {
     int heightPoint = 10;
 
 	String direccion = "RIGHT";
-	long frequency = 50;
+	long frequency = 75;
 
     boolean gameOver = false;
 
