@@ -68,7 +68,7 @@ public class SnakeGame {
                gameOver = true;
             }
             boolean colisionp2 = snake2.move();
-            if(colisionp1){
+            if(colisionp2){
                 gameOver = true;
             }
 
@@ -86,7 +86,6 @@ public class SnakeGame {
                 generateFood();
             }
 
-            // Aquí podrías agregar más comprobaciones de colisión (por ejemplo, contra sí mismas o entre ambas serpientes)
         }
     }
 }

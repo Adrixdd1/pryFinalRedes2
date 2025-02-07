@@ -1,7 +1,7 @@
 package connection;
 import java.util.Scanner;
 
-class ServerInputHandler extends Thread {
+class ServerInputHandler{} /*extends Thread {
     public void run() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
@@ -9,8 +9,10 @@ class ServerInputHandler extends Thread {
             if (message.equalsIgnoreCase("start")) {
                 System.out.println("El juego ha comenzado. Deteniendo el broadcast...");
                 Server.stopBroadcast();
+                Server.startGame();
             }
             Server.broadcast("Servidor: " + message, null);
         }
     }
 }
+*/

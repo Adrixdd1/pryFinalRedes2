@@ -17,22 +17,15 @@ public class BroadCastThread extends Thread {
 
             while (running) {
                 socket.send(packet);
-                // Espera 5 segundos entre broadcasts, pero se interrumpe si se detiene el broadcast.
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    // Permite salir del ciclo si se interrumpe el sleep.
-                    break;
-                }
+                Thread.sleep(5000); // Enviar cada 5 segundos
             }
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    // Método para detener el broadcast
     public void stopBroadcast() {
         running = false;
-        this.interrupt(); // Interrumpe el sleep si está en curso.
+        this.interrupt();
     }
 }

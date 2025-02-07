@@ -4,7 +4,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.Set;
 
-class ClientHandler extends Thread {
+class ClientHandler {/*extends Thread {
     private Socket clientSocket;
     private Set<PrintWriter> clients;
 
@@ -24,7 +24,7 @@ class ClientHandler extends Thread {
             while ((message = in.readLine()) != null) {
                 System.out.println("Mensaje recibido: " + message);
                 // Opcional: podrías reenviar el mensaje a otros clientes o procesarlo según la lógica del juego.
-                Server.broadcast(message, out);
+            }//Server.broadcast(message, out);
             }
         }catch (SocketException se){
             System.out.println("el cliente se marchó");
@@ -35,5 +35,5 @@ class ClientHandler extends Thread {
             // Elimina el cliente del conjunto al desconectarse
             // Nota: Asegúrate de eliminar el canal del cliente; aquí se asume que out ya no se usará.
         }
-    }
+    }*/
 }

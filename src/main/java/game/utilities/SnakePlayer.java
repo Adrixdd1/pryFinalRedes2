@@ -2,15 +2,17 @@ package game.utilities;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class SnakePlayer {
     private ArrayList<Point> body;
     private String direction;
-    private Color color;
-    private int stepSize;
-    private int boardWidth;
-    private int boardHeight;
+    private final Color color;
+    private final int stepSize;
+    private final int boardWidth;
+    private final int boardHeight;
 
     public SnakePlayer(Point start, String direction, Color color, int stepSize, int boardWidth, int boardHeight) {
         this.body = new ArrayList<>();
@@ -21,6 +23,7 @@ public class SnakePlayer {
         this.boardWidth = boardWidth;
         this.boardHeight = boardHeight;
     }
+
 
     public Point getHead() {
         return body.get(0);
@@ -34,7 +37,6 @@ public class SnakePlayer {
         return direction;
     }
 
-    // Evita la inversión directa de la dirección
     public void setDirection(String d) {
         if ((this.direction.equals("RIGHT") && d.equals("LEFT")) ||
                 (this.direction.equals("LEFT") && d.equals("RIGHT")) ||
@@ -45,72 +47,31 @@ public class SnakePlayer {
         this.direction = d;
     }
 
-    public boolean move() {
+    private Point getNextHead() {
         Point head = getHead();
-        Point newHead = new Point(head.x, head.y);
+        Point newHead = new Point(head);
 
         switch (direction) {
-            case "RIGHT" -> {
-                newHead.x += stepSize;
-                if (newHead.x >= boardWidth) {
-                    newHead.x = 0;
-                }
-            }
-            case "LEFT" -> {
-                newHead.x -= stepSize;
-                if (newHead.x < 0) {
-                    newHead.x = boardWidth - stepSize;
-                }
-            }
-            case "UP" -> {
-                newHead.y -= stepSize;
-                if (newHead.y < 0) {
-                    newHead.y = boardHeight - stepSize;
-                }
-            }
-            case "DOWN" -> {
-                newHead.y += stepSize;
-                if (newHead.y >= boardHeight) {
-                    newHead.y = 0;
-                }
-            }
+            case "RIGHT" -> newHead.x = (newHead.x + stepSize) % boardWidth;
+            case "LEFT" -> newHead.x = (newHead.x - stepSize + boardWidth) % boardWidth;
+            case "UP" -> newHead.y = (newHead.y - stepSize + boardHeight) % boardHeight;
+            case "DOWN" -> newHead.y = (newHead.y + stepSize) % boardHeight;
         }
-        long colisiones=body.stream().filter(e->newHead.distance(e)<stepSize).count();
-        if (colisiones>0){
-            return true;
-        }
-        body.addFirst(newHead);
-        body.removeLast();
-        return false ;
-        // Aquí podrías agregar comprobación de colisión consigo misma
+        return newHead;
     }
 
-    // Hace crecer la serpiente (por ejemplo, al comer)
-    public void grow() {
-        Point head = getHead();
-        Point newHead = new Point(head.x, head.y);
-        if (direction.equals("RIGHT")) {
-            newHead.x += stepSize;
-            if (newHead.x >= boardWidth) {
-                newHead.x = 0;
-            }
-        } else if (direction.equals("LEFT")) {
-            newHead.x -= stepSize;
-            if (newHead.x < 0) {
-                newHead.x = boardWidth - stepSize;
-            }
-        } else if (direction.equals("UP")) {
-            newHead.y -= stepSize;
-            if (newHead.y < 0) {
-                newHead.y = boardHeight - stepSize;
-            }
-        } else if (direction.equals("DOWN")) {
-            newHead.y += stepSize;
-            if (newHead.y >= boardHeight) {
-                newHead.y = 0;
-            }
+    public boolean move() {
+        Point newHead = getNextHead();
+        if (body.contains(newHead)) {
+            return true; // Colisión con sí mismo
         }
         body.add(0, newHead);
+        body.remove(body.size() - 1);
+        return false;
+    }
+
+    public void grow() {
+        body.add(0, getNextHead());
     }
 
     public Color getColor() {
