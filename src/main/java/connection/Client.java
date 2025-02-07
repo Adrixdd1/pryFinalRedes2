@@ -1,9 +1,9 @@
 package connection;
 
 import connection.snakeC.SnakeLANClientGame;
+
 import java.io.*;
 import java.net.*;
-import java.util.Scanner;
 
 public class Client {
     private static final int BROADCAST_PORT = 12346;
@@ -27,11 +27,9 @@ public class Client {
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
             System.out.println("Buscando servidor...");
             socket.receive(packet);
-            // Se espera un mensaje con el formato:
-            // "Snake Server disponible en IP: xxx.xxx.xxx.xxx"
             String msg = new String(packet.getData(), 0, packet.getLength());
             String[] parts = msg.split(" ");
-            serverIp = parts[parts.length - 1];  // La IP debería estar al final del mensaje.
+            serverIp = parts[parts.length - 1];
             System.out.println("Servidor detectado en: " + serverIp);
         } catch (IOException e) {
             System.out.println("No se encontró ningún servidor, usando localhost");

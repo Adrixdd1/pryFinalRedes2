@@ -1,12 +1,15 @@
 package game.principal;
 
+import connection.ServerThread;
+import connection.snakeC.SnakeLANClientGame;
+import connection.snakeC.SnakeLANGame;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
+import java.net.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,32 +73,38 @@ public class StartScreen extends JFrame {
         panel.add(botonesPanel, BorderLayout.SOUTH);
 
         salasModel = new DefaultListModel<>();
-        
-
-        // Iniciar detección de salas
         salasDisponibles = new ArrayList<>();
         new Thread(this::detectarSalas).start();
 
-        // Agregar panel al JFrame
         add(panel);
         setVisible(true);
     }
 
+    /**
+     * Crea una sala iniciando el servidor.
+     */
     private void crearSala() {
         String nombre = nombreField.getText().trim();
         if (nombre.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Por favor, ingresa tu nombre.");
             return;
         }
+        try {
+            // Inicia el servidor (ServerThread se encarga de crear el ServerSocket, emitir broadcast y lanzar el juego)
+            ServerThread serverThread = new ServerThread(12345);
+            serverThread.start();
 
-        // Lógica para crear sala
-        JOptionPane.showMessageDialog(this, "Sala creada. Esperando jugadores...");
-        dispose(); // Cierra la pantalla de inicio
-        new GameFrame().setVisible(true); // Abre el juego
+            JOptionPane.showMessageDialog(this, "Sala creada. Esperando jugadores...");
+            dispose(); // Cierra la pantalla de inicio
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error al crear sala: " + e.getMessage());
+        }
     }
 
+    /**
+     * Muestra un diálogo con las salas disponibles para unirse.
+     */
     private void mostrarSalasDisponibles() {
-        // Diálogo con lista actualizable
         JDialog dialog = new JDialog(this, "Salas Disponibles", true);
         dialog.setSize(300, 200);
         dialog.setLocationRelativeTo(this);
@@ -104,12 +113,15 @@ public class StartScreen extends JFrame {
         listaSalas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         JButton btnUnirse = new JButton("Unirse");
-        btnUnirse.addActionListener(e -> {
-            int indice = listaSalas.getSelectedIndex();
-            if (indice != -1) {
-                InetAddress ip = salasDisponibles.get(indice);
-                unirseASala(ip);
-                dialog.dispose();
+        btnUnirse.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int indice = listaSalas.getSelectedIndex();
+                if (indice != -1) {
+                    InetAddress ip = salasDisponibles.get(indice);
+                    unirseASala(ip);
+                    dialog.dispose();
+                }
             }
         });
 
@@ -117,30 +129,36 @@ public class StartScreen extends JFrame {
         dialog.add(btnUnirse, BorderLayout.SOUTH);
         dialog.setVisible(true);
     }
+
+    /**
+     * Se conecta como cliente a la sala con la IP dada.
+     */
     private void unirseASala(InetAddress ip) {
-        // Lógica de conexión
         try {
             JOptionPane.showMessageDialog(this, "Conectando a " + ip.getHostAddress());
+            // Conectar al servidor en el puerto 12345
+            Socket socket = new Socket(ip, 12345);
             dispose();
-            new GameFrame().setVisible(true);
+            new SnakeLANClientGame(socket).setVisible(true);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error al conectar: " + e.getMessage());
         }
     }
 
+    /**
+     * Detecta salas disponibles mediante broadcast.
+     */
     private void detectarSalas() {
         try (DatagramSocket socket = new DatagramSocket(12346, InetAddress.getByName("0.0.0.0"))) {
             socket.setBroadcast(true);
             byte[] buffer = new byte[256];
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-
             while (true) {
                 socket.receive(packet);
                 String mensaje = new String(packet.getData(), 0, packet.getLength());
                 if (mensaje.startsWith("Snake Server disponible en IP: ")) {
                     String ip = mensaje.split(" ")[5];
                     InetAddress address = InetAddress.getByName(ip);
-
                     SwingUtilities.invokeLater(() -> {
                         if (!salasDisponibles.contains(address)) {
                             salasDisponibles.add(address);
@@ -153,5 +171,4 @@ public class StartScreen extends JFrame {
             e.printStackTrace();
         }
     }
-
 }
