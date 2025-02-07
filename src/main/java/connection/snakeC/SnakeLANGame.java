@@ -44,7 +44,7 @@ public class SnakeLANGame extends GameFrame {
                 outputStream.flush();
 
                 // Pequeña pausa para evitar sobrecarga en la red
-                Thread.sleep(50);
+                Thread.sleep(10);
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
                 running = false;

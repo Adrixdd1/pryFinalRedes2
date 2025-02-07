@@ -6,12 +6,16 @@ import java.net.*;
 public class BroadCastThread extends Thread {
     private static final int BROADCAST_PORT = 12346;
     private volatile boolean running = true;
+    private String nombreServidor;
+    public BroadCastThread(String nombreServidor) {
+        this.nombreServidor=nombreServidor;
+    }
 
     @Override
     public void run() {
         try (DatagramSocket socket = new DatagramSocket()) {
             socket.setBroadcast(true);
-            String message = "Snake Server disponible en IP: " + InetAddress.getLocalHost().getHostAddress();
+            String message = "sala "+ nombreServidor+ " disponible en IP: " + InetAddress.getLocalHost().getHostAddress();
             byte[] buffer = message.getBytes();
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, InetAddress.getByName("255.255.255.255"), BROADCAST_PORT);
 

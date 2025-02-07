@@ -9,16 +9,17 @@ public class ServerThread extends Thread {
     private final int PORT;
     private Socket clientConnected;
     private BroadCastThread broadcastThread;
-
-    public ServerThread(int port) throws IOException {
+    private String nombre;
+    public ServerThread(int port,String nombre) throws IOException {
         this.PORT = port;
+        this.nombre=nombre;
     }
 
     @Override
     public void run() {
         System.out.println("Servidor iniciado...");
         // Inicia el broadcast para que los clientes lo detecten.
-        broadcastThread = new BroadCastThread();
+        broadcastThread = new BroadCastThread(nombre);
         broadcastThread.start();
 
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
