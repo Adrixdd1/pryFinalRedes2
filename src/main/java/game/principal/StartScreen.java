@@ -33,7 +33,7 @@ public class StartScreen extends JFrame {
         panel.add(titulo, BorderLayout.NORTH);
 
         JPanel nombrePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        nombrePanel.add(new JLabel("Nombre:"));
+        nombrePanel.add(new JLabel("Nombre Sala:"));
         nombreField = new JTextField(15);
         nombrePanel.add(nombreField);
         panel.add(nombrePanel, BorderLayout.CENTER);
@@ -63,7 +63,7 @@ public class StartScreen extends JFrame {
     private void crearSala() {
         String nombre = nombreField.getText().trim();
         if (nombre.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor, ingresa tu nombre.");
+            JOptionPane.showMessageDialog(this, "Por favor, ingresa el nombre de sala.");
             return;
         }
         try {

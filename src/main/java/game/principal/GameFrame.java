@@ -12,13 +12,17 @@ public class GameFrame extends JFrame {
     private GameLoop loop;
     private final long frequency = 75; // Frecuencia de actualización en milisegundos
 
-    public GameFrame() {
+    public GameFrame(boolean isDefaultKeyListener) {
+        if(isDefaultKeyListener){  
+            panel.addKeyListener(new GameKeyListener(game));
+        }
+
+
         setTitle("Snake - Two Player");
         game = new SnakeGame();
         panel = new GamePanel(game);
 
         // Añade el key listener al panel en lugar del JFrame
-        panel.addKeyListener(new GameKeyListener(game));
 
         add(panel);
 

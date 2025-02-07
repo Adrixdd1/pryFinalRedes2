@@ -18,8 +18,10 @@ public class SnakeLANGame extends GameFrame {
     private boolean running = true;
 
     public SnakeLANGame(Socket cliente) {
+        super(false);
         this.cliente = cliente;
         super.panel.addKeyListener(new ServerKeyListener(super.game));
+        super.panel.removeKeyListener(new GameKeyListener(game));
         try {
             outputStream = new ObjectOutputStream(cliente.getOutputStream());
             inputStream = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
