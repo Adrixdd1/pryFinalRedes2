@@ -13,6 +13,7 @@ import java.util.List;
 
 public class SnakeLANGame extends GameFrame {
     private List<ObjectOutputStream> clientOutputs = new ArrayList<>(); // Lista para almacenar los ObjectOutputStream
+    private int connectedPlayers = 0;
     private boolean running = true;
 
     public SnakeLANGame(Socket cliente) {
@@ -21,6 +22,8 @@ public class SnakeLANGame extends GameFrame {
             // Crear ObjectOutputStream para el cliente y almacenarlo
             ObjectOutputStream output = new ObjectOutputStream(cliente.getOutputStream());
             clientOutputs.add(output);
+            connectedPlayers++;
+            asignarSnakeActivo(connectedPlayers); 
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -40,9 +43,9 @@ public class SnakeLANGame extends GameFrame {
                     while ((command = input.readLine()) != null) {
                         SnakeGame juego = super.getInfo();
                         switch (playerNumber) {
-                            case 1: juego.getSnake2().setDirection(command); break;
-                            case 2: juego.getSnake3().setDirection(command); break;
-                            case 3: juego.getSnake4().setDirection(command); break;
+                            case 1: juego.getSnake2().setDirection(command); 
+                            case 2: juego.getSnake3().setDirection(command); 
+                            case 3: juego.getSnake4().setDirection(command); 
                         }
                     }
                 } catch (IOException e) {
@@ -74,10 +77,25 @@ public class SnakeLANGame extends GameFrame {
         SnakeGame juego = super.getInfo();
         return new SnakeGameInfo(
             juego.getFood(),
+            new SoftSnakePlayer(juego.getSnake1().getBody().toArray(new Point[0]), juego.getSnake1().getColor()),
             new SoftSnakePlayer(juego.getSnake2().getBody().toArray(new Point[0]), juego.getSnake2().getColor()),
             new SoftSnakePlayer(juego.getSnake3().getBody().toArray(new Point[0]), juego.getSnake3().getColor()),
             new SoftSnakePlayer(juego.getSnake4().getBody().toArray(new Point[0]), juego.getSnake4().getColor()),
             juego.isGameOver()
         );
+    }
+    private void asignarSnakeActivo(int playerNumber) {
+        SnakeGame juego = super.getInfo();
+        switch(playerNumber) {
+            case 1: 
+                juego.getSnake2().setActive(true);
+                break;
+            case 2:
+                juego.getSnake3().setActive(true);
+                break;
+            case 3:
+                juego.getSnake4().setActive(true);
+                break;
+        }
     }
 }

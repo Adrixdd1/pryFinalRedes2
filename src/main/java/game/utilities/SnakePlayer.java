@@ -23,7 +23,15 @@ public class SnakePlayer {
         this.boardWidth = boardWidth;
         this.boardHeight = boardHeight;
     }
-
+    private boolean active = false;
+    
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+    
+    public boolean isActive() {
+        return active;
+    }
 
     public Point getHead() {
         return body.get(0);

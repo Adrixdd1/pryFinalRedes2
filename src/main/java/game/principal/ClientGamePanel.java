@@ -31,11 +31,12 @@ public class ClientGamePanel extends JPanel {
         g.fillRect(0, 0, SnakeGame.BOARD_WIDTH, SnakeGame.BOARD_HEIGHT);
 
         // Dibujar serpientes
-        drawSnake(g, game.getSnake1());
-        drawSnake(g, game.getSnake2());
-        drawSnake(g, game.getSnake3());
-        drawSnake(g, game.getSnake4());
-
+        if (game.getSnake1() != null) drawSnake(g, game.getSnake1());
+        if (game.getSnake2() != null) drawSnake(g, game.getSnake2());
+        if (game.getSnake3() != null) drawSnake(g, game.getSnake3());
+        if (game.getSnake4() != null) drawSnake(g, game.getSnake4());
+        int playersActive = contarJugadoresActivos();
+        g.drawString("Jugadores conectados: " + playersActive, 300, 260);
         // Dibujar comida
         g.setColor(Color.RED);
         Point food = game.getFood();
@@ -56,9 +57,16 @@ public class ClientGamePanel extends JPanel {
             g.drawString("ESC to Exit", 100, 340);
         }
     }
-
+    private int contarJugadoresActivos() {
+        int count = 0;
+        if (game.getSnake1() != null && game.getSnake1().getBody() != null) count++;
+        if (game.getSnake2() != null && game.getSnake2().getBody() != null) count++;
+        if (game.getSnake3() != null && game.getSnake3().getBody() != null) count++;
+        if (game.getSnake4() != null && game.getSnake4().getBody() != null) count++;
+        return count;
+    }
     private void drawSnake(Graphics g, SoftSnakePlayer snake) {
-        if (snake == null || snake.getBody() == null) return;
+        if (snake == null || snake.getBody() == null || snake.getBody().length == 0) return; 
         g.setColor(snake.getColor());
         for (Point p : snake.getBody()) {
             g.fillRect(p.x, p.y, SnakeGame.STEP_SIZE, SnakeGame.STEP_SIZE);

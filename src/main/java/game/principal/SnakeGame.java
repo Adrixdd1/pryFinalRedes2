@@ -48,10 +48,10 @@ public class SnakeGame {
 
     public void update() {
         if (!gameOver) {
-            checkCollision(snake1);
-            checkCollision(snake2);
-            checkCollision(snake3);
-            checkCollision(snake4);
+            if (snake1.isActive()) checkCollision(snake1);
+            if (snake2.isActive()) checkCollision(snake2);
+            if (snake3.isActive()) checkCollision(snake3);
+            if (snake4.isActive()) checkCollision(snake4);
         }
     }
 
