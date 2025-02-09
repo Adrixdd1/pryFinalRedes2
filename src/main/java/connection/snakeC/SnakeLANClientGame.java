@@ -29,7 +29,12 @@ public class SnakeLANClientGame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        ClientGamePanel panel = new ClientGamePanel(null); // Inicializar sin datos
+        ClientGamePanel panel;
+        try {
+            panel =  new ClientGamePanel((SnakeGameInfo) this.servidor.readObject());
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         add(panel);
         setVisible(true);
 
