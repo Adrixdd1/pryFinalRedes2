@@ -86,10 +86,14 @@ public class SnakeLANGame extends GameFrame {
         SnakeGame juego = super.getInfo();
         return new SnakeGameInfo(
             juego.getFood(),
-            new SoftSnakePlayer(juego.getSnake1().getBody().toArray(new Point[0]), juego.getSnake1().getColor()),
-            new SoftSnakePlayer(juego.getSnake2().getBody().toArray(new Point[0]), juego.getSnake2().getColor()),
-            new SoftSnakePlayer(juego.getSnake3().getBody().toArray(new Point[0]), juego.getSnake3().getColor()),
-            new SoftSnakePlayer(juego.getSnake4().getBody().toArray(new Point[0]), juego.getSnake4().getColor()),
+            juego.getSnake1().isActive() ? 
+                new SoftSnakePlayer(juego.getSnake1().getBody().toArray(new Point[0]), juego.getSnake1().getColor()) : null,
+            juego.getSnake2().isActive() ? 
+                new SoftSnakePlayer(juego.getSnake2().getBody().toArray(new Point[0]), juego.getSnake2().getColor()) : null,
+            juego.getSnake3().isActive() ? 
+                new SoftSnakePlayer(juego.getSnake3().getBody().toArray(new Point[0]), juego.getSnake3().getColor()) : null,
+            juego.getSnake4().isActive() ? 
+                new SoftSnakePlayer(juego.getSnake4().getBody().toArray(new Point[0]), juego.getSnake4().getColor()) : null,
             juego.isGameOver()
         );
     }
