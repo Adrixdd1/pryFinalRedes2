@@ -23,7 +23,16 @@ public class SnakeLANGame extends GameFrame {
             ObjectOutputStream output = new ObjectOutputStream(cliente.getOutputStream());
             clientOutputs.add(output);
             connectedPlayers++;
-            asignarSnakeActivo(connectedPlayers); 
+            if(connectedPlayers == 1) {
+                super.getInfo().activateSnake2();
+            } 
+            if(connectedPlayers == 2) {
+                super.getInfo().activateSnake3();
+            } 
+            if(connectedPlayers == 3) {
+                super.getInfo().activateSnake4();
+            } 
+             
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -43,9 +52,9 @@ public class SnakeLANGame extends GameFrame {
                     while ((command = input.readLine()) != null) {
                         SnakeGame juego = super.getInfo();
                         switch (playerNumber) {
-                            case 1: juego.getSnake2().setDirection(command); 
-                            case 2: juego.getSnake3().setDirection(command); 
-                            case 3: juego.getSnake4().setDirection(command); 
+                            case 1: super.getInfo().activateSnake2();
+                            case 2: super.getInfo().activateSnake3();
+                            case 3: super.getInfo().activateSnake4(); 
                         }
                     }
                 } catch (IOException e) {

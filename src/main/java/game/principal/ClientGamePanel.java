@@ -31,12 +31,20 @@ public class ClientGamePanel extends JPanel {
         g.fillRect(0, 0, SnakeGame.BOARD_WIDTH, SnakeGame.BOARD_HEIGHT);
 
         // Dibujar serpientes
-        if (game.getSnake1() != null) drawSnake(g, game.getSnake1());
-        if (game.getSnake2() != null) drawSnake(g, game.getSnake2());
-        if (game.getSnake3() != null) drawSnake(g, game.getSnake3());
-        if (game.getSnake4() != null) drawSnake(g, game.getSnake4());
-        int playersActive = contarJugadoresActivos();
-        g.drawString("Jugadores conectados: " + playersActive, 300, 260);
+        if(game.getSnake1() != null && game.getSnake1().isActive()) {
+            drawSnake(g, game.getSnake1());
+        }
+        if(game.getSnake2() != null && game.getSnake2().isActive()) {
+            drawSnake(g, game.getSnake2());
+        }
+        if(game.getSnake3() != null && game.getSnake3().isActive()) {
+            drawSnake(g, game.getSnake3());
+        }
+        if(game.getSnake4() != null && game.getSnake4().isActive()) {
+            drawSnake(g, game.getSnake4());
+        }
+       // int playersActive = contarJugadoresActivos();
+       // g.drawString("Jugadores conectados: " + playersActive, 300, 260);
         // Dibujar comida
         g.setColor(Color.RED);
         Point food = game.getFood();

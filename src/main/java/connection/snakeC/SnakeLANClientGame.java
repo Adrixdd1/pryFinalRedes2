@@ -41,14 +41,21 @@ public class SnakeLANClientGame extends JFrame {
         // Hilo para leer actualizaciones del servidor
         new Thread(() -> {
             try {
-                while (true) {
+                while(true) {
                     SnakeGameInfo gameInfo = (SnakeGameInfo) servidor.readObject();
+                    // Filtrar serpientes inactivas
+                    filterInactiveSnakes(gameInfo); 
                     panel.setGameInfo(gameInfo);
                     panel.repaint();
                 }
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+            } catch (Exception e) { /* ... */ }
         }).start();
+    }
+    private void filterInactiveSnakes(SnakeGameInfo gameInfo) {
+        if(gameInfo.getSnake1() != null && !gameInfo.getSnake1().isActive()) gameInfo.setSnake1(null);
+        if(gameInfo.getSnake2() != null && !gameInfo.getSnake2().isActive()) gameInfo.setSnake2(null);
+        if(gameInfo.getSnake3() != null && !gameInfo.getSnake3().isActive()) gameInfo.setSnake3(null);
+        if(gameInfo.getSnake4() != null && !gameInfo.getSnake4().isActive()) gameInfo.setSnake4(null);
+
     }
 }

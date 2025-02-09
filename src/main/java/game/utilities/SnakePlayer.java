@@ -14,7 +14,7 @@ public class SnakePlayer {
     private final int boardWidth;
     private final int boardHeight;
 
-    public SnakePlayer(Point start, String direction, Color color, int stepSize, int boardWidth, int boardHeight) {
+    public SnakePlayer(Point start, String direction, Color color, int stepSize, int boardWidth, int boardHeight, boolean active) {
         this.body = new ArrayList<>();
         this.body.add(start);
         this.direction = direction;
@@ -23,7 +23,7 @@ public class SnakePlayer {
         this.boardWidth = boardWidth;
         this.boardHeight = boardHeight;
     }
-    private boolean active = false;
+    private boolean active;
     
     public void setActive(boolean active) {
         this.active = active;

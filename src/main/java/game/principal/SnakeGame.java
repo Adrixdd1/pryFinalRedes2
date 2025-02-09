@@ -24,10 +24,11 @@ public class SnakeGame {
 
     public void startGame() {
         food = new Point(200, 100);
-        snake1 = new SnakePlayer(new Point(320, 240), "RIGHT", Color.BLUE, STEP_SIZE, BOARD_WIDTH, BOARD_HEIGHT);
-        snake2 = new SnakePlayer(new Point(320, 300), "LEFT", Color.GREEN, STEP_SIZE, BOARD_WIDTH, BOARD_HEIGHT);
-        snake3 = new SnakePlayer(new Point(300, 240), "UP", Color.YELLOW, STEP_SIZE, BOARD_WIDTH, BOARD_HEIGHT);
-        snake4 = new SnakePlayer(new Point(300, 300), "DOWN", Color.MAGENTA, STEP_SIZE, BOARD_WIDTH, BOARD_HEIGHT);
+        snake1 = new SnakePlayer(new Point(320, 240), "RIGHT", Color.BLUE, STEP_SIZE, BOARD_WIDTH, BOARD_HEIGHT,true);
+        snake2 = new SnakePlayer(new Point(320, 300), "LEFT", Color.GREEN, STEP_SIZE, BOARD_WIDTH, BOARD_HEIGHT,false);
+        snake3 = new SnakePlayer(new Point(300, 240), "UP", Color.YELLOW, STEP_SIZE, BOARD_WIDTH, BOARD_HEIGHT,false);
+        snake4 = new SnakePlayer(new Point(300, 300), "DOWN", Color.MAGENTA, STEP_SIZE, BOARD_WIDTH, BOARD_HEIGHT,false);
+        
         gameOver = false;
     }
 
@@ -38,7 +39,15 @@ public class SnakeGame {
     public Point getFood() { return food; }
     public boolean isGameOver() { return gameOver; }
     public void setGameOver(boolean gameOver) { this.gameOver = gameOver; }
-
+    public void activateSnake2() {
+        snake2.setActive(true);
+    }
+    public void activateSnake3() {
+        snake3.setActive(true);
+    }
+    public void activateSnake4() {
+        snake4.setActive(true);
+    }
     public void generateFood() {
         Random rnd = new Random();
         int x = (rnd.nextInt(BOARD_WIDTH) / STEP_SIZE) * STEP_SIZE;

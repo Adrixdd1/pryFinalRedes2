@@ -16,7 +16,9 @@ public class SoftSnakePlayer implements Serializable {
     public Point[] getBody() {
         return body;
     }
-
+    public boolean isActive() {
+        return body != null && body.length > 0;
+    }
     public void setBody(Point[] body) {
         this.body = body;
     }
