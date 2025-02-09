@@ -31,9 +31,8 @@ public class ClientGamePanel extends JPanel {
         g.fillRect(0, 0, SnakeGame.BOARD_WIDTH, SnakeGame.BOARD_HEIGHT);
     
         // Dibujar solo serpientes activas
-        if (game.getSnake1() != null && game.getSnake1().getBody() != null) {
-            drawSnake(g, game.getSnake1());
-        }
+        drawSnake(g, game.getSnake1());
+        
         if (game.getSnake2() != null && game.getSnake2().getBody() != null) {
             drawSnake(g, game.getSnake2());
         }
@@ -73,10 +72,9 @@ public class ClientGamePanel extends JPanel {
         return count;
     }
     private void drawSnake(Graphics g, SoftSnakePlayer snake) {
-        if (snake == null || snake.getBody() == null || snake.getBody().length == 0) return; 
         g.setColor(snake.getColor());
         for (Point p : snake.getBody()) {
             g.fillRect(p.x, p.y, SnakeGame.STEP_SIZE, SnakeGame.STEP_SIZE);
-        }
+        }       
     }
 }
