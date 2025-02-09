@@ -5,7 +5,6 @@ import game.principal.SnakeGame;
 import game.utilities.ClientGameLoop;
 import game.utilities.GameClientKeyListener;
 import game.utilities.SnakeGameInfo;
-
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
@@ -14,12 +13,12 @@ import java.net.Socket;
 public class SnakeLANClientGame extends JFrame {
     private ObjectInputStream servidor;
     private PrintWriter salida;
-    private Thread loop;
 
     public SnakeLANClientGame(Socket servidorSocket) {
         try {
             this.servidor = new ObjectInputStream(servidorSocket.getInputStream());
-            salida = new PrintWriter(new OutputStreamWriter(servidorSocket.getOutputStream()), true);        } catch (IOException e) {
+            salida = new PrintWriter(new OutputStreamWriter(servidorSocket.getOutputStream()), true);
+        } catch (IOException e) {
             e.printStackTrace();
             return;
         }
@@ -42,12 +41,10 @@ public class SnakeLANClientGame extends JFrame {
 
         panel.setFocusable(true);
         panel.requestFocusInWindow();
-        panel.addKeyListener(new GameClientKeyListener(salida)); // Agregar el KeyListener
+        panel.addKeyListener(new GameClientKeyListener(salida));
 
-        // Ejecutar el loop en un hilo separado
         new Thread(() -> {
-            loop = new ClientGameLoop(panel, this.servidor);
-            loop.start();
+            new ClientGameLoop(panel, this.servidor).start();
         }).start();
     }
 }
