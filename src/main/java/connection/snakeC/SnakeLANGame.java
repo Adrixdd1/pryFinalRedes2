@@ -12,21 +12,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SnakeLANGame extends GameFrame {
-    private List<Socket> clients = new ArrayList<>();
+    private List<ObjectOutputStream> clientOutputs = new ArrayList<>(); // Lista para almacenar los ObjectOutputStream
     private boolean running = true;
 
     public SnakeLANGame(Socket cliente) {
         super(false);
-        clients.add(cliente);
-        if (clients.size() == 1) {
+        try {
+            // Crear ObjectOutputStream para el cliente y almacenarlo
+            ObjectOutputStream output = new ObjectOutputStream(cliente.getOutputStream());
+            clientOutputs.add(output);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (clientOutputs.size() == 1) { // Iniciar el gameLoop solo una vez
             new Thread(this::gameLoop).start();
         }
-        configurarCliente(cliente, clients.size());
+        configurarCliente(cliente, clientOutputs.size());
     }
 
     private void configurarCliente(Socket cliente, int playerNumber) {
         try {
-            ObjectOutputStream output = new ObjectOutputStream(cliente.getOutputStream());
             BufferedReader input = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
 
             new Thread(() -> {
@@ -53,9 +58,8 @@ public class SnakeLANGame extends GameFrame {
         while (running) {
             try {
                 SnakeGameInfo gameInfo = getGameInfo();
-                for (Socket client : clients) {
-                    ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
-                    output.writeObject(gameInfo);
+                for (ObjectOutputStream output : clientOutputs) {
+                    output.writeObject(gameInfo); // Reutilizar el mismo ObjectOutputStream
                     output.flush();
                 }
                 Thread.sleep(10);

@@ -23,28 +23,32 @@ public class SnakeLANClientGame extends JFrame {
             return;
         }
 
+        // Configuración de la ventana...
         setTitle("Snake - Client");
         setSize(SnakeGame.BOARD_WIDTH, SnakeGame.BOARD_HEIGHT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
 
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        setLocation(dim.width / 2 - getSize().width / 2, dim.height / 2 - getSize().height / 2);
-
-        ClientGamePanel panel;
-        try {
-            panel = new ClientGamePanel((SnakeGameInfo) this.servidor.readObject());
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        ClientGamePanel panel = new ClientGamePanel(null); // Inicializar sin datos
         add(panel);
         setVisible(true);
 
+        // Configurar listeners...
+        panel.addKeyListener(new GameClientKeyListener(salida));
         panel.setFocusable(true);
         panel.requestFocusInWindow();
-        panel.addKeyListener(new GameClientKeyListener(salida));
 
+        // Hilo para leer actualizaciones del servidor
         new Thread(() -> {
-            new ClientGameLoop(panel, this.servidor).start();
+            try {
+                while (true) {
+                    SnakeGameInfo gameInfo = (SnakeGameInfo) servidor.readObject();
+                    panel.setGameInfo(gameInfo);
+                    panel.repaint();
+                }
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }).start();
     }
 }
