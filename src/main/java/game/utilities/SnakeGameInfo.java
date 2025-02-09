@@ -9,6 +9,8 @@ public class SnakeGameInfo implements Serializable {
     private static final long serialVersionUID = 1L;
     private SoftSnakePlayer snake1;
     private SoftSnakePlayer snake2;
+    private SoftSnakePlayer snake3;
+    private SoftSnakePlayer snake4;
     private Point food;
     private boolean gameOver;
     public static final int BOARD_WIDTH = 640;
@@ -16,10 +18,11 @@ public class SnakeGameInfo implements Serializable {
     public static final int STEP_SIZE = 10;
     public static final int FOOD_SIZE = 10;
 
-    public SnakeGameInfo(Point food, SoftSnakePlayer snake2, SoftSnakePlayer snake1, boolean gameOver) {
+    public SnakeGameInfo(Point food, SoftSnakePlayer s2, SoftSnakePlayer s3, SoftSnakePlayer s4, boolean gameOver) {
         this.food = food;
-        this.snake2 = snake2;
-        this.snake1 = snake1;
+        this.snake2 = s2;
+        this.snake3 = s3;
+        this.snake4 = s4;
         this.gameOver = gameOver;
     }
 
@@ -33,6 +36,8 @@ public class SnakeGameInfo implements Serializable {
     public SoftSnakePlayer getSnake2() {
         return snake2;
     }
+    public SoftSnakePlayer getSnake3() { return snake3; }
+    public SoftSnakePlayer getSnake4() { return snake4; }
 
     public Point getFood() {
         return food;

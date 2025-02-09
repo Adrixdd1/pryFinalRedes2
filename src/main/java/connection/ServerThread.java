@@ -21,15 +21,15 @@ public class ServerThread extends Thread {
         // Inicia el broadcast para que los clientes lo detecten.
         broadcastThread = new BroadCastThread(nombre);
         broadcastThread.start();
-
+        System.out.println("Esperando conexión de cliente en el puerto " + PORT);
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("Esperando conexión de cliente en el puerto " + PORT);
-            clientConnected = serverSocket.accept();
-            System.out.println("Cliente conectado: " + clientConnected.getInetAddress());
-            // Detiene el broadcast una vez que se conecta un cliente.
+            for (int i = 0; i < 4; i++) {
+                
+                Socket client = serverSocket.accept();
+                System.out.println("Cliente conectado: " + clientConnected.getInetAddress());
+                new SnakeLANGame(client);
+            }
             broadcastThread.stopBroadcast();
-            // Inicia el juego en modo servidor.
-            new SnakeLANGame(clientConnected);
         } catch (IOException e) {
             e.printStackTrace();
         }

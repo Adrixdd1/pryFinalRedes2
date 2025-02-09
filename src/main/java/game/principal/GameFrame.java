@@ -18,7 +18,7 @@ public class GameFrame extends JFrame {
         }
 
 
-        setTitle("Snake - Two Player");
+        setTitle("Snake - Multi Player");
         game = new SnakeGame();
         panel = new GamePanel(game);
 
