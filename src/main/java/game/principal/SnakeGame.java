@@ -1,8 +1,6 @@
 package game.principal;
 
-import game.utilities.GameLoop;
 import game.utilities.SnakePlayer;
-
 import java.awt.Point;
 import java.util.Random;
 import java.awt.Color;
@@ -10,6 +8,8 @@ import java.awt.Color;
 public class SnakeGame {
     private SnakePlayer snake1;
     private SnakePlayer snake2;
+    private SnakePlayer snake3;
+    private SnakePlayer snake4;
     private Point food;
     private boolean gameOver;
 
@@ -26,30 +26,20 @@ public class SnakeGame {
         food = new Point(200, 100);
         snake1 = new SnakePlayer(new Point(320, 240), "RIGHT", Color.BLUE, STEP_SIZE, BOARD_WIDTH, BOARD_HEIGHT);
         snake2 = new SnakePlayer(new Point(320, 300), "LEFT", Color.GREEN, STEP_SIZE, BOARD_WIDTH, BOARD_HEIGHT);
+        snake3 = new SnakePlayer(new Point(320, 200), "UP", Color.YELLOW, STEP_SIZE, BOARD_WIDTH, BOARD_HEIGHT);
+        snake4 = new SnakePlayer(new Point(320, 340), "DOWN", Color.MAGENTA, STEP_SIZE, BOARD_WIDTH, BOARD_HEIGHT);
         gameOver = false;
     }
 
-    public SnakePlayer getSnake1() {
-        return snake1;
-    }
+    public SnakePlayer getSnake1() { return snake1; }
+    public SnakePlayer getSnake2() { return snake2; }
+    public SnakePlayer getSnake3() { return snake3; }
+    public SnakePlayer getSnake4() { return snake4; }
 
-    public SnakePlayer getSnake2() {
-        return snake2;
-    }
+    public Point getFood() { return food; }
+    public boolean isGameOver() { return gameOver; }
+    public void setGameOver(boolean gameOver) { this.gameOver = gameOver; }
 
-    public Point getFood() {
-        return food;
-    }
-
-    public boolean isGameOver() {
-        return gameOver;
-    }
-
-    public void setGameOver(boolean gameOver) {
-        this.gameOver = gameOver;
-    }
-
-    // Genera una posición aleatoria para la comida (alineada al STEP_SIZE)
     public void generateFood() {
         Random rnd = new Random();
         int x = rnd.nextInt(BOARD_WIDTH);
@@ -59,34 +49,26 @@ public class SnakeGame {
         food = new Point(x, y);
     }
 
-    // Actualiza el estado del juego: mueve las serpientes y comprueba si han comido la comida.
     public void update() {
         if (!gameOver) {
-            //comprueba colision con uno mismo
-            boolean colisionp1 = snake1.move();
-            if(colisionp1){
-               gameOver = true;
-            }
-            boolean colisionp2 = snake2.move();
-            if(colisionp2){
-                gameOver = true;
-            }
+            boolean c1 = snake1.move();
+            boolean c2 = snake2.move();
+            boolean c3 = snake3.move();
+            boolean c4 = snake4.move();
+            if (c1 || c2 || c3 || c4) gameOver = true;
 
-            // Comprueba si la serpiente 1 come la comida
-            Point head1 = snake1.getHead();
-            if (head1.distance(food) < STEP_SIZE) {
-                snake1.grow();
-                generateFood();
-            }
+            checkFood(snake1);
+            checkFood(snake2);
+            checkFood(snake3);
+            checkFood(snake4);
+        }
+    }
 
-            // Comprueba si la serpiente 2 come la comida
-            Point head2 = snake2.getHead();
-            if (head2.distance(food) < STEP_SIZE) {
-                snake2.grow();
-                generateFood();
-            }
-
+    private void checkFood(SnakePlayer snake) {
+        Point head = snake.getHead();
+        if (head.distance(food) < STEP_SIZE) {
+            snake.grow();
+            generateFood();
         }
     }
 }
-

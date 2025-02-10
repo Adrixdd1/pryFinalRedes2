@@ -15,12 +15,22 @@ public class SnakeLANClientGame extends JFrame {
     private ObjectInputStream servidor;
     private PrintWriter salida;
     private Thread loop;
+    private int playerId;
 
     public SnakeLANClientGame(Socket servidorSocket) {
         try {
+            this.servidor= new ObjectInputStream(servidorSocket.getInputStream());
+            this.playerId = (Integer) this.servidor.readInt(); // Leer ID del servidor
+
             this.servidor = new ObjectInputStream(servidorSocket.getInputStream());
-            salida = new PrintWriter(new OutputStreamWriter(servidorSocket.getOutputStream()), true);        } catch (IOException e) {
+
+            // Configurar controles según ID
+           // ClientGamePanel panel = new ClientGamePanel((SnakeGameInfo) in.readObject());
+            
+            salida = new PrintWriter(new OutputStreamWriter(servidorSocket.getOutputStream()), true);
+        } catch (IOException e) {
             e.printStackTrace();
+
             return;
         }
 
@@ -34,6 +44,8 @@ public class SnakeLANClientGame extends JFrame {
         ClientGamePanel panel;
         try {
             panel = new ClientGamePanel((SnakeGameInfo) this.servidor.readObject());
+            panel.addKeyListener(new GameClientKeyListener(new PrintWriter(servidorSocket.getOutputStream(), true), playerId));
+
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -42,7 +54,7 @@ public class SnakeLANClientGame extends JFrame {
 
         panel.setFocusable(true);
         panel.requestFocusInWindow();
-        panel.addKeyListener(new GameClientKeyListener(salida)); // Agregar el KeyListener
+        //panel.addKeyListener(new GameClientKeyListener(salida)); // Agregar el KeyListener
 
         // Ejecutar el loop en un hilo separado
         new Thread(() -> {
