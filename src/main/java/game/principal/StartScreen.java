@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StartScreen extends JFrame {
+    private ServerThread serverThread;
     private JTextField nombreField;
     private JButton btnCrearSala;
     private JButton btnUnirseSala;
@@ -60,8 +61,6 @@ public class StartScreen extends JFrame {
         salasModel = new DefaultListModel<>();
         salasDisponibles = new ArrayList<>();
         jugadoresConectados = new ArrayList<>();
-        new Thread(this::detectarSalas).start();
-
         // Creación del panel de sala, inicialmente oculto
         salaVisualPanel = new JPanel(new BorderLayout());
         salaVisualPanel.setBorder(BorderFactory.createTitledBorder("Jugadores Conectados"));
@@ -89,7 +88,7 @@ public class StartScreen extends JFrame {
             return;
         }
         try {
-            ServerThread serverThread = new ServerThread(12345, nombre);
+            serverThread = new ServerThread(12345, nombre);
             serverThread.start();
             JOptionPane.showMessageDialog(this, "Sala creada. Esperando jugadores...");
 
@@ -109,14 +108,14 @@ public class StartScreen extends JFrame {
 
     private void iniciarJuego() {
         JOptionPane.showMessageDialog(this, "Iniciando el juego...");
-        // Aquí iría la lógica para iniciar la partida
+        this.serverThread.gameReady=true;
+
     }
 
     private void unirseASala(Sala sala) {
         try {
             JOptionPane.showMessageDialog(this, "Conectando a " + sala.getNombre() + " en " + sala.getDireccionIP().getHostAddress());
             Socket socket = new Socket(sala.getDireccionIP(), 12345);
-            // En este caso, se lanza el juego del cliente y se cierra la ventana actual
             new SnakeLANClientGame(socket).setVisible(true);
             dispose();
         } catch (Exception e) {
@@ -125,6 +124,7 @@ public class StartScreen extends JFrame {
     }
 
     private void mostrarSalasDisponibles() {
+        new Thread(this::detectarSalas).start();
         JDialog dialog = new JDialog(this, "Salas Disponibles", true);
         dialog.setSize(300, 200);
         dialog.setLocationRelativeTo(this);

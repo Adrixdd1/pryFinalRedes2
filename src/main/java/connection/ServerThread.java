@@ -11,7 +11,7 @@ public class ServerThread extends Thread {
     private final int PORT;
     private final String nombre;
     private final List<Socket> clients;
-    private boolean gameReady;
+    public boolean gameReady;
     private ServerSocket serverSocket;
 
     public ServerThread(int port, String nombre) throws IOException {
@@ -27,6 +27,7 @@ public class ServerThread extends Thread {
             serverSocket = new ServerSocket(PORT);
             System.out.println("Servidor iniciado en el puerto " + PORT);
             BroadCastThread bt = new BroadCastThread(nombre);
+            bt.start();
             while (!gameReady) {
                 Socket client = serverSocket.accept();
                 synchronized (clients) {
