@@ -20,7 +20,7 @@ public class SnakeLANClientGame extends JFrame {
     public SnakeLANClientGame(Socket servidorSocket) {
         try {
             this.servidor= new ObjectInputStream(servidorSocket.getInputStream());
-            this.playerId = (Integer) this.servidor.readInt(); // Leer ID del servidor
+           // this.playerId =  this.servidor.readObject(); // Leer ID del servidor
 
             this.servidor = new ObjectInputStream(servidorSocket.getInputStream());
 
@@ -44,7 +44,7 @@ public class SnakeLANClientGame extends JFrame {
         ClientGamePanel panel;
         try {
             panel = new ClientGamePanel((SnakeGameInfo) this.servidor.readObject());
-            panel.addKeyListener(new GameClientKeyListener(new PrintWriter(servidorSocket.getOutputStream(), true), playerId));
+            panel.addKeyListener(new GameClientKeyListener(new PrintWriter(servidorSocket.getOutputStream(), true)));
 
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);

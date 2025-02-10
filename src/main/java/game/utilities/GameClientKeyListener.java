@@ -7,61 +7,49 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
 public class GameClientKeyListener extends KeyAdapter {
-    private final PrintWriter out;
-    private final int playerId;
+    private PrintWriter salida;
 
-    public GameClientKeyListener(PrintWriter out, int playerId) {
-        this.out = out;
-        this.playerId = playerId;
+    public GameClientKeyListener(PrintWriter salida) {
+        this.salida = salida;
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        String command = null;
-        switch (playerId) {
-            case 2: // Flechas
-                command = getArrowKey(e);
-                break;
-            case 3: // WASD
-                command = getWASD(e);
-                break;
-            case 4: // IJKL
-                command = getIJKL(e);
-                break;
+        // Tecla para salir
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            System.exit(0);
         }
-        if (command != null) {
-            out.println(command);
-            out.flush();
-        }
-    }
 
-    private String getArrowKey(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_RIGHT: return "RIGHT";
-            case KeyEvent.VK_LEFT: return "LEFT";
-            case KeyEvent.VK_UP: return "UP";
-            case KeyEvent.VK_DOWN: return "DOWN";
-            default: return null;
-        }
-    }
+        // Controles para el jugador 2 (WASD)
+        try {
+            String command = null;
+            if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                command = "RIGHT";
+            } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                command = "LEFT";
+            } else if (e.getKeyCode() == KeyEvent.VK_UP) {
+                command = "UP";
+            } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                command = "DOWN";
+            }
+            if (e.getKeyCode() == KeyEvent.VK_D) {
+                command = "RIGHT";
+            } else if (e.getKeyCode() == KeyEvent.VK_A) {
+                command = "LEFT";
+            } else if (e.getKeyCode() == KeyEvent.VK_W) {
+                command = "UP";
+            } else if (e.getKeyCode() == KeyEvent.VK_S) {
+                command = "DOWN";
+            }
 
-    private String getWASD(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_D: return "RIGHT";
-            case KeyEvent.VK_A: return "LEFT";
-            case KeyEvent.VK_W: return "UP";
-            case KeyEvent.VK_S: return "DOWN";
-            default: return null;
-        }
-    }
 
-    private String getIJKL(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_L: return "RIGHT";
-            case KeyEvent.VK_J: return "LEFT";
-            case KeyEvent.VK_I: return "UP";
-            case KeyEvent.VK_K: return "DOWN";
-            default: return null;
+            if (command != null) {
+                salida.println(command);  // Enviar el comando con salto de línea
+                salida.flush(); // Asegurar que se envía de inmediato
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 }
