@@ -39,21 +39,21 @@ public class GamePanel extends JPanel {
             g.fillRect(p.x, p.y, SnakeGame.STEP_SIZE, SnakeGame.STEP_SIZE);
         }
 
-        if (game.getSnake2() != null && game.getSnake2().getBody() != null) {
+        if (game.getSnake2().isActive()) {
             // Dibuja la serpiente del jugador 2
             g.setColor(game.getSnake2().getColor());
             for (Point p : game.getSnake2().getBody()) {
                 g.fillRect(p.x, p.y, SnakeGame.STEP_SIZE, SnakeGame.STEP_SIZE);
             }
         }
-        if (game.getSnake3() != null && game.getSnake3().getBody() != null) {
+        if (game.getSnake3().isActive()) {
             // Dibuja la serpiente del jugador 3
             g.setColor(game.getSnake3().getColor());
             for (Point p : game.getSnake3().getBody()) {
                 g.fillRect(p.x, p.y, SnakeGame.STEP_SIZE, SnakeGame.STEP_SIZE);
             }
         }
-        if (game.getSnake4() != null && game.getSnake4().getBody() != null) {
+        if (game.getSnake4().isActive()) {
             // Dibuja la serpiente del jugador 4
             g.setColor(game.getSnake4().getColor());
             for (Point p : game.getSnake4().getBody()) {
