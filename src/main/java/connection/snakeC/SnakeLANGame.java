@@ -55,8 +55,8 @@ public class SnakeLANGame extends GameFrame {
             try {
                 out = new ObjectOutputStream(socket.getOutputStream());
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                out.writeObject(playerId); // Enviar ID al cliente
-                out.flush();
+                //out.writeObject(playerId); // Enviar ID al cliente
+                //out.flush();
             } catch (IOException e) {
                 e.printStackTrace();
             }
