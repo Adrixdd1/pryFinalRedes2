@@ -70,6 +70,7 @@ public class ServerThread extends Thread {
 
         int playerId = 2; // IDs empiezan en 2
         for (Socket client : clients) {
+            System.out.println("agregado cliente "+playerId);
             game.addClient(client, playerId++);
         }
     }
