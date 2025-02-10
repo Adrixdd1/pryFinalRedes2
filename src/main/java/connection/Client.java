@@ -1,13 +1,14 @@
 package connection;
 
 import connection.snakeC.SnakeLANClientGame;
-import java.io.IOException;
+
+import java.io.*;
 import java.net.*;
 
 public class Client {
     private static final int BROADCAST_PORT = 12346;
     private static final int PORT = 12345;
-    private static String serverIp = "localhost";
+    private static String serverIp = "localhost"; // Se actualizará al detectar el servidor.
 
     public static void main(String[] args) {
         discoverServer();

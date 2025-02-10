@@ -5,6 +5,7 @@ import game.principal.SnakeGame;
 import game.utilities.ClientGameLoop;
 import game.utilities.GameClientKeyListener;
 import game.utilities.SnakeGameInfo;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
@@ -13,54 +14,40 @@ import java.net.Socket;
 public class SnakeLANClientGame extends JFrame {
     private ObjectInputStream servidor;
     private PrintWriter salida;
+    private Thread loop;
 
     public SnakeLANClientGame(Socket servidorSocket) {
         try {
             this.servidor = new ObjectInputStream(servidorSocket.getInputStream());
-            salida = new PrintWriter(new OutputStreamWriter(servidorSocket.getOutputStream()), true);
-        } catch (IOException e) {
+            salida = new PrintWriter(new OutputStreamWriter(servidorSocket.getOutputStream()), true);        } catch (IOException e) {
             e.printStackTrace();
             return;
         }
 
-        // Configuración de la ventana...
         setTitle("Snake - Client");
         setSize(SnakeGame.BOARD_WIDTH, SnakeGame.BOARD_HEIGHT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        setLocation(dim.width / 2 - getSize().width / 2, dim.height / 2 - getSize().height / 2);
 
         ClientGamePanel panel;
         try {
-            panel =  new ClientGamePanel((SnakeGameInfo) this.servidor.readObject());
+            panel = new ClientGamePanel((SnakeGameInfo) this.servidor.readObject());
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
         add(panel);
         setVisible(true);
 
-        // Configurar listeners...
-        panel.addKeyListener(new GameClientKeyListener(salida));
         panel.setFocusable(true);
         panel.requestFocusInWindow();
+        panel.addKeyListener(new GameClientKeyListener(salida)); // Agregar el KeyListener
 
-        // Hilo para leer actualizaciones del servidor
+        // Ejecutar el loop en un hilo separado
         new Thread(() -> {
-            try {
-                while(true) {
-                    SnakeGameInfo gameInfo = (SnakeGameInfo) servidor.readObject();
-                    // Filtrar serpientes inactivas
-                    filterInactiveSnakes(gameInfo); 
-                    panel.setGameInfo(gameInfo);
-                    panel.repaint();
-                }
-            } catch (Exception e) { /* ... */ }
+            loop = new ClientGameLoop(panel, this.servidor);
+            loop.start();
         }).start();
-    }
-    private void filterInactiveSnakes(SnakeGameInfo gameInfo) {
-        if(gameInfo.getSnake1() != null && !gameInfo.getSnake1().isActive()) gameInfo.setSnake1(null);
-        if(gameInfo.getSnake2() != null && !gameInfo.getSnake2().isActive()) gameInfo.setSnake2(null);
-        if(gameInfo.getSnake3() != null && !gameInfo.getSnake3().isActive()) gameInfo.setSnake3(null);
-        if(gameInfo.getSnake4() != null && !gameInfo.getSnake4().isActive()) gameInfo.setSnake4(null);
-
     }
 }

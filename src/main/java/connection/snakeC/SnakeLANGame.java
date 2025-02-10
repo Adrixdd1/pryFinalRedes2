@@ -2,113 +2,103 @@ package connection.snakeC;
 
 import game.principal.GameFrame;
 import game.principal.SnakeGame;
+import game.utilities.GameKeyListener;
+import game.utilities.ServerKeyListener;
 import game.utilities.SnakeGameInfo;
 import game.utilities.SoftSnakePlayer;
 
-import java.awt.Point;
+import java.awt.*;
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SnakeLANGame extends GameFrame {
-    private List<ObjectOutputStream> clientOutputs = new ArrayList<>(); // Lista para almacenar los ObjectOutputStream
-    private int connectedPlayers = 0;
+    private Socket cliente;
+    private ObjectOutputStream outputStream;
+    private BufferedReader inputStream;
     private boolean running = true;
 
     public SnakeLANGame(Socket cliente) {
         super(false);
+        this.cliente = cliente;
+        super.panel.addKeyListener(new ServerKeyListener(super.game));
+        super.panel.removeKeyListener(new GameKeyListener(game));
         try {
-            // Crear ObjectOutputStream para el cliente y almacenarlo
-            ObjectOutputStream output = new ObjectOutputStream(cliente.getOutputStream());
-            clientOutputs.add(output);
-            connectedPlayers++;
-            if(connectedPlayers == 1) {
-                super.getInfo().activateSnake2();
-            } 
-            if(connectedPlayers == 2) {
-                super.getInfo().activateSnake3();
-            } 
-            if(connectedPlayers == 3) {
-                super.getInfo().activateSnake4();
-            } 
-             
+            outputStream = new ObjectOutputStream(cliente.getOutputStream());
+            inputStream = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
         } catch (IOException e) {
             e.printStackTrace();
+            return;
         }
-        if (clientOutputs.size() == 1) { // Iniciar el gameLoop solo una vez
-            new Thread(this::gameLoop).start();
-        }
-        configurarCliente(cliente, clientOutputs.size());
-    }
 
-    private void configurarCliente(Socket cliente, int playerNumber) {
-        try {
-            BufferedReader input = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
-
-            new Thread(() -> {
-                try {
-                    String command;
-                    while ((command = input.readLine()) != null) {
-                        SnakeGame juego = super.getInfo();
-                        switch (playerNumber) {
-                            case 1: super.getInfo().activateSnake2();
-                            case 2: super.getInfo().activateSnake3();
-                            case 3: super.getInfo().activateSnake4(); 
-                        }
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }).start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // Iniciar hilos para enviar datos y recibir comandos
+        new Thread(this::gameLoop).start();
+        new Thread(this::listenForCommands).start();
     }
 
     private void gameLoop() {
         while (running) {
             try {
+                // Obtiene el estado actual del juego
                 SnakeGameInfo gameInfo = getGameInfo();
-                for (ObjectOutputStream output : clientOutputs) {
-                    output.writeObject(gameInfo); // Reutilizar el mismo ObjectOutputStream
-                    output.flush();
-                }
+
+                // Envía la información al cliente
+                outputStream.writeObject(gameInfo);
+                outputStream.flush();
+
+                // Pequeña pausa para evitar sobrecarga en la red
                 Thread.sleep(10);
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
                 running = false;
             }
         }
+        closeConnections();
+    }
+
+    private void listenForCommands() {
+        try {
+            String command;
+            while (running && (command = inputStream.readLine()) != null) {
+                System.out.println("recibido: "+command);
+                SnakeGame juego = super.getInfo();
+                juego.getSnake2().setDirection(command); // Aplicar la dirección al snake2
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            running = false;
+        }
+    }
+
+    private void closeConnections() {
+        try {
+            if (outputStream != null) outputStream.close();
+            if (inputStream != null) inputStream.close();
+            if (cliente != null) cliente.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private SnakeGameInfo getGameInfo() {
         SnakeGame juego = super.getInfo();
-        return new SnakeGameInfo(
-            juego.getFood(),
-            juego.getSnake1().isActive() ? 
-                new SoftSnakePlayer(juego.getSnake1().getBody().toArray(new Point[0]), juego.getSnake1().getColor()) : null,
-            juego.getSnake2().isActive() ? 
-                new SoftSnakePlayer(juego.getSnake2().getBody().toArray(new Point[0]), juego.getSnake2().getColor()) : null,
-            juego.getSnake3().isActive() ? 
-                new SoftSnakePlayer(juego.getSnake3().getBody().toArray(new Point[0]), juego.getSnake3().getColor()) : null,
-            juego.getSnake4().isActive() ? 
-                new SoftSnakePlayer(juego.getSnake4().getBody().toArray(new Point[0]), juego.getSnake4().getColor()) : null,
-            juego.isGameOver()
+
+        SoftSnakePlayer j1 = new SoftSnakePlayer(
+                juego.getSnake1().getBody().toArray(new Point[0]),
+                juego.getSnake1().getColor()
         );
-    }
-    private void asignarSnakeActivo(int playerNumber) {
-        SnakeGame juego = super.getInfo();
-        switch(playerNumber) {
-            case 1: 
-                juego.getSnake2().setActive(true);
-                break;
-            case 2:
-                juego.getSnake3().setActive(true);
-                break;
-            case 3:
-                juego.getSnake4().setActive(true);
-                break;
-        }
+        SoftSnakePlayer j2 = new SoftSnakePlayer(
+                juego.getSnake2().getBody().toArray(new Point[0]),
+                juego.getSnake2().getColor()
+        );
+        SoftSnakePlayer j3 = new SoftSnakePlayer(
+                juego.getSnake1().getBody().toArray(new Point[0]),
+                juego.getSnake1().getColor()
+        );
+        SoftSnakePlayer j4 = new SoftSnakePlayer(
+                juego.getSnake2().getBody().toArray(new Point[0]),
+                juego.getSnake2().getColor()
+        );
+
+        return new SnakeGameInfo(juego.getFood(), j1,j2,j3,j4, juego.isGameOver());
     }
 }
