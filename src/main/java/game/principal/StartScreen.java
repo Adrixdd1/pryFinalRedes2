@@ -5,7 +5,6 @@ import connection.snakeC.SnakeLANClientGame;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.net.*;
 import java.io.*;
 import java.util.ArrayList;
@@ -15,13 +14,18 @@ public class StartScreen extends JFrame {
     private JTextField nombreField;
     private JButton btnCrearSala;
     private JButton btnUnirseSala;
+    private JButton btnIniciarJuego;
     private DefaultListModel<Sala> salasModel;
+    private JList<String> jugadoresList;
     private List<Sala> salasDisponibles;
+    private List<String> jugadoresConectados;
 
+    // Panel de sala que se muestra al crear o conectar a una sala
+    private JPanel salaVisualPanel;
 
     public StartScreen() {
         setTitle("Snake Game - Pantalla de Inicio");
-        setSize(500, 300);
+        setSize(500, 400);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -55,7 +59,24 @@ public class StartScreen extends JFrame {
 
         salasModel = new DefaultListModel<>();
         salasDisponibles = new ArrayList<>();
-        new Thread(this::detectarSalas).start(); 
+        jugadoresConectados = new ArrayList<>();
+        new Thread(this::detectarSalas).start();
+
+        // Creación del panel de sala, inicialmente oculto
+        salaVisualPanel = new JPanel(new BorderLayout());
+        salaVisualPanel.setBorder(BorderFactory.createTitledBorder("Jugadores Conectados"));
+        salaVisualPanel.setVisible(false); // No se muestra hasta conectarse o crear una sala
+
+        jugadoresList = new JList<>(new DefaultListModel<>());
+        salaVisualPanel.add(new JScrollPane(jugadoresList), BorderLayout.CENTER);
+
+        btnIniciarJuego = new JButton("Iniciar Juego");
+        btnIniciarJuego.setBackground(new Color(255, 87, 34));
+        btnIniciarJuego.setForeground(Color.WHITE);
+        btnIniciarJuego.addActionListener(e -> iniciarJuego());
+        salaVisualPanel.add(btnIniciarJuego, BorderLayout.SOUTH);
+
+        panel.add(salaVisualPanel, BorderLayout.EAST);
 
         add(panel);
         setVisible(true);
@@ -71,9 +92,35 @@ public class StartScreen extends JFrame {
             ServerThread serverThread = new ServerThread(12345, nombre);
             serverThread.start();
             JOptionPane.showMessageDialog(this, "Sala creada. Esperando jugadores...");
-            dispose();
+
+            // Deshabilitar controles de creación y conexión
+            nombreField.setEnabled(false);
+            btnCrearSala.setEnabled(false);
+            btnUnirseSala.setEnabled(false);
+
+            // Mostrar el panel de sala con los jugadores conectados e iniciar juego
+            salaVisualPanel.setVisible(true);
+            // Aquí podrías actualizar la lista de jugadores conforme se conecten
+
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error al crear sala: " + e.getMessage());
+        }
+    }
+
+    private void iniciarJuego() {
+        JOptionPane.showMessageDialog(this, "Iniciando el juego...");
+        // Aquí iría la lógica para iniciar la partida
+    }
+
+    private void unirseASala(Sala sala) {
+        try {
+            JOptionPane.showMessageDialog(this, "Conectando a " + sala.getNombre() + " en " + sala.getDireccionIP().getHostAddress());
+            Socket socket = new Socket(sala.getDireccionIP(), 12345);
+            // En este caso, se lanza el juego del cliente y se cierra la ventana actual
+            new SnakeLANClientGame(socket).setVisible(true);
+            dispose();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al conectar: " + e.getMessage());
         }
     }
 
@@ -100,17 +147,6 @@ public class StartScreen extends JFrame {
         dialog.setVisible(true);
     }
 
-    private void unirseASala(Sala sala) {
-        try {
-            JOptionPane.showMessageDialog(this, "Conectando a " + sala.getNombre() + " en " + sala.getDireccionIP().getHostAddress());
-            Socket socket = new Socket(sala.getDireccionIP(), 12345);
-            dispose();
-            new SnakeLANClientGame(socket).setVisible(true);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al conectar: " + e.getMessage());
-        }
-    }
-
     private void detectarSalas() {
         try (DatagramSocket socket = new DatagramSocket(12346, InetAddress.getByName("0.0.0.0"))) {
             socket.setBroadcast(true);
@@ -120,12 +156,12 @@ public class StartScreen extends JFrame {
             while (true) {
                 socket.receive(packet);
                 String mensaje = new String(packet.getData(), 0, packet.getLength());
-                System.out.println("Mensaje recibido: " + mensaje); // Debug
+                System.out.println("Mensaje recibido: " + mensaje);
 
                 if (mensaje.startsWith("sala ")) {
                     String[] partes = mensaje.split(" ");
                     String nombreSala = partes[1];
-                    String ip = partes[partes.length - 1]; // La IP es el último elemento
+                    String ip = partes[partes.length - 1];
                     InetAddress address = InetAddress.getByName(ip);
 
                     Sala sala = new Sala(nombreSala, address);
@@ -133,7 +169,7 @@ public class StartScreen extends JFrame {
                         if (!salasDisponibles.contains(sala)) {
                             salasDisponibles.add(sala);
                             salasModel.addElement(sala);
-                            System.out.println("Sala agregada: " + sala); // Debug
+                            System.out.println("Sala agregada: " + sala);
                         }
                     });
                 }
@@ -143,6 +179,7 @@ public class StartScreen extends JFrame {
         }
     }
 }
+
 
 class Sala {
     private String nombre;
