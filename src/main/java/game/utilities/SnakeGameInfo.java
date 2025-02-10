@@ -13,10 +13,10 @@ public class SnakeGameInfo implements Serializable {
 
     public SnakeGameInfo(Point food, SoftSnakePlayer s2, SoftSnakePlayer s1, SoftSnakePlayer s3, SoftSnakePlayer s4, boolean gameOver) {
         this.food = food;
-        this.snake1 = s1;
-        this.snake2 = s2;
-        this.snake3 = s3;
-        this.snake4 = s4;
+        this.snake1 = new SoftSnakePlayer(s1.getBody(), s1.getColor(), s1.isActive());
+        this.snake2 = new SoftSnakePlayer(s2.getBody(), s2.getColor(), s2.isActive());
+        this.snake3 = new SoftSnakePlayer(s3.getBody(), s3.getColor(), s3.isActive());
+        this.snake4 = new SoftSnakePlayer(s4.getBody(), s4.getColor(), s4.isActive());
         this.gameOver = gameOver;
     }
 

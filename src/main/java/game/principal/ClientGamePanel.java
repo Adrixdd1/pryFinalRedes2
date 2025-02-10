@@ -52,15 +52,39 @@ public class ClientGamePanel extends JPanel {
             g.setColor(Color.WHITE);
             g.drawString("GAME OVER", 300, 200);
             g.setFont(new Font("TimesRoman", Font.BOLD, 20));
-            int score1 = game.getSnake1().getBody().length - 1;
-            int score2 = game.getSnake2().getBody().length - 1;
-            g.drawString("SCORE P1: " + score1 + "  P2: " + score2, 300, 240);
+            String scoreText = "";
+            if (game.getSnake1().isActive()) {
+                int score1 = game.getSnake1().getBody().length - 1;
+                scoreText += "SCORE P1: " + score1 + "  ";
+            }
+            
+            // Comprobamos si el jugador 2 está activo, y en ese caso obtenemos y añadimos su score
+            if (game.getSnake2().isActive()) {
+                int score2 = game.getSnake2().getBody().length - 1;
+                scoreText += "SCORE P2: " + score2 + "  ";
+            }
+            
+            if (game.getSnake3().isActive()) {
+                int score3 = game.getSnake3().getBody().length - 1;
+                scoreText += "SCORE P3: " + score3 + "  ";
+            }
+            if (game.getSnake4().isActive()) {
+                int score4 = game.getSnake4().getBody().length - 1;
+                scoreText += "SCORE P4: " + score4 + "  ";
+            }
             g.drawString("N to Start New Game", 100, 320);
             g.drawString("ESC to Exit", 100, 340);
         }
     }
     private void drawSnake(Graphics g, SoftSnakePlayer snake) {
+        if (!snake.isActive()) {
+            return;
+        }
+    
+        // Para las serpientes activas, se utiliza su color asignado.
         g.setColor(snake.getColor());
+        
+        // Dibujar el cuerpo de la serpiente.
         for (Point p : snake.getBody()) {
             g.fillRect(p.x, p.y, SnakeGame.STEP_SIZE, SnakeGame.STEP_SIZE);
         }

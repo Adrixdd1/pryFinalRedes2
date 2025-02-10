@@ -22,6 +22,7 @@ public class ServerThread extends Thread {
             for (int i = 0; i < 3; i++) {
                 Socket client = serverSocket.accept();
                 game.addClient(client, i + 2); // Asignar IDs 2,3,4
+                
             }
             broadcastThread.stopBroadcast();
         } catch (IOException e) { e.printStackTrace(); }

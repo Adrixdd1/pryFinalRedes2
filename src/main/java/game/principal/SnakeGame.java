@@ -51,10 +51,21 @@ public class SnakeGame {
 
     public void update() {
         if (!gameOver) {
-            boolean c1 = snake1.move();
-            boolean c2 = snake2.move();
-            boolean c3 = snake3.move();
-            boolean c4 = snake4.move();
+            boolean c1=false;
+            boolean c2=false;
+            boolean c3=false;
+            boolean c4=false;
+            if (snake1.isActive()){
+                 c1 = snake1.move();}
+            if (snake2.isActive()){
+                 c2 = snake2.move();
+            } 
+            if (snake3.isActive()){
+                 c3 = snake3.move();
+            }
+            if (snake4.isActive()) {
+                 c4 = snake4.move();}
+
             if (c1 || c2 || c3 || c4) gameOver = true;
             peroSiChocoONeh();
             if (gameOver) {
