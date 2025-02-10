@@ -56,7 +56,10 @@ public class SnakeGame {
             boolean c3 = snake3.move();
             boolean c4 = snake4.move();
             if (c1 || c2 || c3 || c4) gameOver = true;
-
+            peroSiChocoONeh();
+            if (gameOver) {
+                return;
+            }
             checkFood(snake1);
             checkFood(snake2);
             checkFood(snake3);
@@ -69,6 +72,21 @@ public class SnakeGame {
         if (head.distance(food) < STEP_SIZE) {
             snake.grow();
             generateFood();
+        }
+    }
+    //para checar si algún jugador colisionó con otro
+    private void peroSiChocoONeh() {
+        SnakePlayer[] snakes = {snake1, snake2, snake3, snake4};
+        for (int i = 0; i < snakes.length; i++) {
+            Point head = snakes[i].getHead();
+            for (int j = 0; j < snakes.length; j++) {
+                if (i != j) {
+                    if (snakes[j].getBody().contains(head)) {
+                        gameOver = true;
+                        return;
+                    }
+                }
+            }
         }
     }
 }
