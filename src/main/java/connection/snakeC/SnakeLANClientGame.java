@@ -19,18 +19,10 @@ public class SnakeLANClientGame extends JFrame {
 
     public SnakeLANClientGame(Socket servidorSocket) {
         try {
-            this.servidor= new ObjectInputStream(servidorSocket.getInputStream());
-           // this.playerId =  this.servidor.readObject(); // Leer ID del servidor
-
             this.servidor = new ObjectInputStream(servidorSocket.getInputStream());
-
-            // Configurar controles según ID
-           // ClientGamePanel panel = new ClientGamePanel((SnakeGameInfo) in.readObject());
-            
             salida = new PrintWriter(new OutputStreamWriter(servidorSocket.getOutputStream()), true);
         } catch (IOException e) {
             e.printStackTrace();
-
             return;
         }
 
