@@ -148,7 +148,7 @@ public class StartScreen extends JFrame {
     }
 
     private void detectarSalas() {
-        try (DatagramSocket socket = new DatagramSocket(12346, InetAddress.getByName("0.0.0.0"))) {
+        try (DatagramSocket socket = new DatagramSocket(9800, InetAddress.getByName("0.0.0.0"))) {
             socket.setBroadcast(true);
             byte[] buffer = new byte[256];
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
@@ -156,7 +156,7 @@ public class StartScreen extends JFrame {
             while (true) {
                 socket.receive(packet);
                 String mensaje = new String(packet.getData(), 0, packet.getLength());
-                System.out.println("Mensaje recibido: " + mensaje);
+                //System.out.println("Mensaje recibido: " + mensaje);
 
                 if (mensaje.startsWith("sala ")) {
                     String[] partes = mensaje.split(" ");

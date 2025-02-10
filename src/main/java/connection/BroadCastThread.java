@@ -22,7 +22,7 @@ public class BroadCastThread extends Thread {
 
             while (running) {
                 socket.send(packet);
-                System.out.println("Enviando broadcast: " + message); // Debug
+                //System.out.println("Enviando broadcast: " + message); // Debug
                 try {
                     Thread.sleep(5000); // Espera 5 segundos entre broadcasts
                 } catch (InterruptedException e) {

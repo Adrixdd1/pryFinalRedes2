@@ -6,7 +6,7 @@ import java.io.*;
 import java.net.*;
 
 public class Client {
-    private static final int BROADCAST_PORT = 12346; // Puerto de broadcast
+    private static final int BROADCAST_PORT = 9800; // Puerto de broadcast
     private static final int PORT = 12345; // Puerto del servidor
     private static String serverIp = "localhost";
 
