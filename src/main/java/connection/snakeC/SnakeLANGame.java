@@ -91,12 +91,12 @@ public class SnakeLANGame extends GameFrame {
                 juego.getSnake2().getColor()
         );
         SoftSnakePlayer j3 = new SoftSnakePlayer(
-                juego.getSnake1().getBody().toArray(new Point[0]),
-                juego.getSnake1().getColor()
+                juego.getSnake3().getBody().toArray(new Point[0]),
+                juego.getSnake3().getColor()
         );
         SoftSnakePlayer j4 = new SoftSnakePlayer(
-                juego.getSnake2().getBody().toArray(new Point[0]),
-                juego.getSnake2().getColor()
+                juego.getSnake4().getBody().toArray(new Point[0]),
+                juego.getSnake4().getColor()
         );
 
         return new SnakeGameInfo(juego.getFood(), j1,j2,j3,j4, juego.isGameOver());
