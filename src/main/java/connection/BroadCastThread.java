@@ -4,29 +4,29 @@ import java.io.IOException;
 import java.net.*;
 
 public class BroadCastThread extends Thread {
-    private static final int BROADCAST_PORT = 12346;
+    private static final int BROADCAST_PORT = 12346; // Puerto de broadcast
     private volatile boolean running = true;
     private String nombreServidor;
+
     public BroadCastThread(String nombreServidor) {
-        this.nombreServidor=nombreServidor;
+        this.nombreServidor = nombreServidor;
     }
 
     @Override
     public void run() {
         try (DatagramSocket socket = new DatagramSocket()) {
             socket.setBroadcast(true);
-            String message = "sala "+ nombreServidor+ " disponible en IP: " + InetAddress.getLocalHost().getHostAddress();
+            String message = "sala " + nombreServidor + " disponible en IP: " + InetAddress.getLocalHost().getHostAddress();
             byte[] buffer = message.getBytes();
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, InetAddress.getByName("255.255.255.255"), BROADCAST_PORT);
 
             while (running) {
                 socket.send(packet);
-                // Espera 5 segundos entre broadcasts, pero se interrumpe si se detiene el broadcast.
+                System.out.println("Enviando broadcast: " + message); // Debug
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(5000); // Espera 5 segundos entre broadcasts
                 } catch (InterruptedException e) {
-                    // Permite salir del ciclo si se interrumpe el sleep.
-                    break;
+                    break; // Salir si se interrumpe
                 }
             }
         } catch (IOException e) {
@@ -34,9 +34,8 @@ public class BroadCastThread extends Thread {
         }
     }
 
-    // Método para detener el broadcast
     public void stopBroadcast() {
         running = false;
-        this.interrupt(); // Interrumpe el sleep si está en curso.
+        this.interrupt(); // Interrumpe el sleep si está en curso
     }
 }

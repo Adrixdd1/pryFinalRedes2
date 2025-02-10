@@ -18,6 +18,7 @@ public class StartScreen extends JFrame {
     private DefaultListModel<Sala> salasModel;
     private List<Sala> salasDisponibles;
 
+
     public StartScreen() {
         setTitle("Snake Game - Pantalla de Inicio");
         setSize(500, 300);
@@ -54,7 +55,7 @@ public class StartScreen extends JFrame {
 
         salasModel = new DefaultListModel<>();
         salasDisponibles = new ArrayList<>();
-        new Thread(this::detectarSalas).start();
+        new Thread(this::detectarSalas).start(); 
 
         add(panel);
         setVisible(true);
@@ -115,19 +116,24 @@ public class StartScreen extends JFrame {
             socket.setBroadcast(true);
             byte[] buffer = new byte[256];
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+
             while (true) {
                 socket.receive(packet);
                 String mensaje = new String(packet.getData(), 0, packet.getLength());
+                System.out.println("Mensaje recibido: " + mensaje); // Debug
+
                 if (mensaje.startsWith("sala ")) {
                     String[] partes = mensaje.split(" ");
                     String nombreSala = partes[1];
-                    String ip = partes[5];
+                    String ip = partes[partes.length - 1]; // La IP es el último elemento
                     InetAddress address = InetAddress.getByName(ip);
+
                     Sala sala = new Sala(nombreSala, address);
                     SwingUtilities.invokeLater(() -> {
                         if (!salasDisponibles.contains(sala)) {
                             salasDisponibles.add(sala);
                             salasModel.addElement(sala);
+                            System.out.println("Sala agregada: " + sala); // Debug
                         }
                     });
                 }
