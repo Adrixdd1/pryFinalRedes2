@@ -26,7 +26,7 @@ public class ServerThread extends Thread {
         try {
             serverSocket = new ServerSocket(PORT);
             System.out.println("Servidor iniciado en el puerto " + PORT);
-
+            BroadCastThread bt = new BroadCastThread(nombre);
             while (!gameReady) {
                 Socket client = serverSocket.accept();
                 synchronized (clients) {
@@ -38,7 +38,7 @@ public class ServerThread extends Thread {
                     gameReady = true;
                 }
             }
-
+            bt.stopBroadcast();
             iniciarJuego();
         } catch (IOException e) {
             e.printStackTrace();
