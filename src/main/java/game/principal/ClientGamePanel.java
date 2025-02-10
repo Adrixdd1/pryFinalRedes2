@@ -33,13 +33,13 @@ public class ClientGamePanel extends JPanel {
         // Dibujar solo serpientes activas
         drawSnake(g, game.getSnake1());
         
-        if (game.getSnake2().isActive()) {
+        if (game.getSnake2() != null && game.getSnake2().getBody() != null) {
             drawSnake(g, game.getSnake2());
         }
-        if (game.getSnake3().isActive()) {
+        if (game.getSnake3() != null && game.getSnake3().getBody() != null) {
             drawSnake(g, game.getSnake3());
         }
-        if (game.getSnake4().isActive()) {
+        if (game.getSnake4() != null && game.getSnake4().getBody() != null) {
             drawSnake(g, game.getSnake4());
         }
     

@@ -31,8 +31,8 @@ public class GameFrame extends JFrame {
         //setUndecorated(true);
 
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        //setLocation(dim.width/2 - getSize().width/2, dim.height/2 - getSize().height/2);
-        setLocation(null);
+        setLocation(dim.width/2 - getSize().width/2, dim.height/2 - getSize().height/2);
+        //setLocation(null);
         setVisible(true);
 
         // Asegúrate de que el panel tenga el foco
