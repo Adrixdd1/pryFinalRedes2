@@ -1,30 +1,57 @@
 package connection;
 
 import connection.snakeC.SnakeLANGame;
-
 import java.io.IOException;
-import java.net.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ServerThread extends Thread {
     private final int PORT;
-    private Socket clientConnected;
-    private BroadCastThread broadcastThread;
-    private String nombre;
-    public ServerThread(int port,String nombre) throws IOException {
+    private final String nombre;
+    private final List<Socket> clients;
+    private boolean gameReady;
+    private ServerSocket serverSocket;
+
+    public ServerThread(int port, String nombre) throws IOException {
         this.PORT = port;
-        this.nombre=nombre;
+        this.nombre = nombre;
+        this.clients = new ArrayList<>();
+        this.gameReady = false;
     }
 
     @Override
     public void run() {
-        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            SnakeLANGame game = new SnakeLANGame();
-            for (int i = 0; i < 3; i++) {
+        try {
+            serverSocket = new ServerSocket(PORT);
+            System.out.println("Servidor iniciado en el puerto " + PORT);
+
+            while (!gameReady) {
                 Socket client = serverSocket.accept();
-                game.addClient(client, i + 2); // Asignar IDs 2,3,4
-                
+                synchronized (clients) {
+                    clients.add(client);
+                    System.out.println("Jugador conectado: " + client.getInetAddress());
+                }
+
+                if (clients.size() >= 3) {
+                    gameReady = true;
+                }
             }
-            broadcastThread.stopBroadcast();
-        } catch (IOException e) { e.printStackTrace(); }
+
+            iniciarJuego();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void iniciarJuego() {
+        System.out.println("Iniciando juego con " + clients.size() + " jugadores.");
+        SnakeLANGame game = new SnakeLANGame();
+
+        int playerId = 2; // IDs empiezan en 2
+        for (Socket client : clients) {
+            game.addClient(client, playerId++);
+        }
     }
 }
