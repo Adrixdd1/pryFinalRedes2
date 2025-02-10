@@ -23,7 +23,7 @@ public class SnakePlayer {
         this.stepSize = stepSize;
         this.boardWidth = boardWidth;
         this.boardHeight = boardHeight;
-        this.active = true;
+        this.active = false;
     }
 
     public boolean isActive() { return active; }
