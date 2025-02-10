@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.*;
 
 public class BroadCastThread extends Thread {
-    private static final int BROADCAST_PORT = 12346; // Puerto de broadcast
+    private static final int BROADCAST_PORT = 9800; // Puerto de broadcast
     private volatile boolean running = true;
     private String nombreServidor;
 
