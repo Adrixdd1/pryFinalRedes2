@@ -27,7 +27,13 @@ public class SnakePlayer {
     }
 
     public boolean isActive() { return active; }
-    public void setActive(boolean active) { this.active = active; }
+    public void setActive(boolean active) {
+        this.active = active;
+        if (!active){
+            this.body.clear();
+        }
+
+    }
     public Point getHead() {
         return body.get(0);
     }
