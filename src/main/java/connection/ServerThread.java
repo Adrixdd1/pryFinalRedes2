@@ -105,5 +105,6 @@ public class ServerThread extends Thread {
             System.out.println("agregado cliente "+playerId);
             game.addClient(playerId++,client.out,client.in);
         }
+        game.startGame();
     }
 }

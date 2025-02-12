@@ -20,7 +20,6 @@ public class SnakeLANGame extends GameFrame {
         super(false);
         panel.addKeyListener(new ServerKeyListener(super.game,this));
         panel.removeKeyListener(new GameKeyListener(game));
-        this.startGame();
     }
 
     public void addClient(int playerId,ObjectOutputStream out, InputStreamReader in) {
