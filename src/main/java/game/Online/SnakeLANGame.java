@@ -45,6 +45,9 @@ public class SnakeLANGame extends GameFrame {
                 game.isGameOver());
     }
     public void startGame() {
+        this.setTitle("Snake -"+ (clients.size()+1) + "jugadores");
+        game.startGame();
+        game.setGameOver(true);
         boolean algo = true;
         game.startGame(algo);
        // game.setGameOver(true);
@@ -91,7 +94,6 @@ public class SnakeLANGame extends GameFrame {
                         e.printStackTrace();
                     }
                 }).start();
-                // Hilo para recibir comandos
                 String command;
                 while ((command = in.readLine()) != null) {
                     switch (playerId) {
