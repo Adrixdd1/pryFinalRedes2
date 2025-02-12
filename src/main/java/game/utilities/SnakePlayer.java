@@ -66,7 +66,9 @@ public class SnakePlayer {
     public boolean move() {
         Point newHead = getNextHead();
         if (body.contains(newHead)) {
+            System.out.println("el juego terminó pq la serpiente "+this.color+" chocó");
             return true; // Colisión con sí mismo
+
         }
         body.add(0, newHead);
         body.remove(body.size() - 1);
