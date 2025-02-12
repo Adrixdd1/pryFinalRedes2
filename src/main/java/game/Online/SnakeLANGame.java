@@ -46,11 +46,8 @@ public class SnakeLANGame extends GameFrame {
     }
     public void startGame() {
         this.setTitle("Snake -"+ (clients.size()+1) + "jugadores");
-        game.startGame();
-        game.setGameOver(true);
         boolean algo = true;
         game.startGame(algo);
-       // game.setGameOver(true);
         game.getSnake1().setActive(true);
         for (ClientHandler client:clients){
             switch (client.playerId){

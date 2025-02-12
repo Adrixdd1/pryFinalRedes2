@@ -26,8 +26,11 @@ public class SnakeGame {
         food = new Point(200, 100);
         snake1 = new SnakePlayer(new Point(320, 240), "RIGHT", Color.BLUE, STEP_SIZE, BOARD_WIDTH, BOARD_HEIGHT);
         snake2 = new SnakePlayer(new Point(320, 300), "LEFT", Color.GREEN, STEP_SIZE, BOARD_WIDTH, BOARD_HEIGHT);
+        snake2.setActive(false);
         snake3 = new SnakePlayer(new Point(320, 200), "UP", Color.YELLOW, STEP_SIZE, BOARD_WIDTH, BOARD_HEIGHT);
+        snake3.setActive(false);
         snake4 = new SnakePlayer(new Point(320, 340), "DOWN", Color.MAGENTA, STEP_SIZE, BOARD_WIDTH, BOARD_HEIGHT);
+        snake4.setActive(false);
         gameOver = true;
     }
     public void startGame() {
