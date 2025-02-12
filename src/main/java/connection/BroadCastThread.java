@@ -1,7 +1,9 @@
 package connection;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 
 public class BroadCastThread extends Thread {
     private static final int BROADCAST_PORT = 9800; // Puerto de broadcast
@@ -19,10 +21,9 @@ public class BroadCastThread extends Thread {
             String message = "sala " + nombreServidor + " disponible en IP: " + InetAddress.getLocalHost().getHostAddress();
             byte[] buffer = message.getBytes();
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, InetAddress.getByName("255.255.255.255"), BROADCAST_PORT);
-
+            
             while (running) {
                 socket.send(packet);
-                //System.out.println("Enviando broadcast: " + message); // Debug
                 try {
                     Thread.sleep(5000); // Espera 5 segundos entre broadcasts
                 } catch (InterruptedException e) {

@@ -1,17 +1,19 @@
 package game.Online;
 
+import java.awt.Point;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 import game.principal.GameFrame;
 import game.principal.SnakeGame;
 import game.utilities.GameKeyListener;
 import game.utilities.Online.ServerKeyListener;
 import game.utilities.Online.SnakeGameInfo;
 import game.utilities.Online.SoftSnakePlayer;
-
-import java.awt.*;
-import java.io.*;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SnakeLANGame extends GameFrame {
     private List<ClientHandler> clients = new ArrayList<>();
@@ -42,10 +44,10 @@ public class SnakeLANGame extends GameFrame {
                         game.getSnake4().isActive()),
                 game.isGameOver());
     }
-
     public void startGame() {
-        game.startGame();
-        game.setGameOver(true);
+        boolean algo = true;
+        game.startGame(algo);
+       // game.setGameOver(true);
         game.getSnake1().setActive(true);
         for (ClientHandler client:clients){
             switch (client.playerId){
@@ -77,12 +79,14 @@ public class SnakeLANGame extends GameFrame {
                 new Thread(() -> {
                     try {
                         while (true) {
+                            // Se obtiene la información actual del juego
                             SnakeGameInfo info = getGameInfo();
+                            // Se envía la información al cliente
                             out.writeObject(info);
                             out.flush();
+                            // Pausa breve para controlar la frecuencia de actualización
                             Thread.sleep(10);
                         }
-
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

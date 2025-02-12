@@ -1,14 +1,16 @@
 package connection;
 
-import game.Online.SnakeLANGame;
-
-import javax.swing.*;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.DefaultListModel;
+import javax.swing.SwingUtilities;
+
+import game.Online.SnakeLANGame;
 public class ServerThread extends Thread {
     private final int PORT;
     private final String nombre;
@@ -44,13 +46,9 @@ public class ServerThread extends Thread {
                         clients.add(new DatosCliente(client));
                         System.out.println("Jugador conectado: " + client.getInetAddress());
                     }
-                    /* También se puede establecer gameReady si se alcanzan 3 clientes
-                    if (clients.size() >= 3) {
-                        gameReady = true;
-                    }*/
+                    
                 } catch (SocketTimeoutException e) {
                     // Si se agota el timeout, simplemente se reitera el bucle
-                    // Esto permite que se compruebe el valor de gameReady periódicamente.
                 }
 
             }

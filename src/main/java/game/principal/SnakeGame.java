@@ -1,9 +1,10 @@
 package game.principal;
 
-import game.utilities.SnakePlayer;
+import java.awt.Color;
 import java.awt.Point;
 import java.util.Random;
-import java.awt.Color;
+
+import game.utilities.SnakePlayer;
 
 public class SnakeGame {
     private SnakePlayer snake1;
@@ -21,7 +22,14 @@ public class SnakeGame {
     public SnakeGame() {
         startGame();
     }
-
+     public void startGame(boolean gameOver) {
+        food = new Point(200, 100);
+        snake1 = new SnakePlayer(new Point(320, 240), "RIGHT", Color.BLUE, STEP_SIZE, BOARD_WIDTH, BOARD_HEIGHT);
+        snake2 = new SnakePlayer(new Point(320, 300), "LEFT", Color.GREEN, STEP_SIZE, BOARD_WIDTH, BOARD_HEIGHT);
+        snake3 = new SnakePlayer(new Point(320, 200), "UP", Color.YELLOW, STEP_SIZE, BOARD_WIDTH, BOARD_HEIGHT);
+        snake4 = new SnakePlayer(new Point(320, 340), "DOWN", Color.MAGENTA, STEP_SIZE, BOARD_WIDTH, BOARD_HEIGHT);
+        gameOver = true;
+    }
     public void startGame() {
         food = new Point(200, 100);
         snake1 = new SnakePlayer(new Point(320, 240), "RIGHT", Color.BLUE, STEP_SIZE, BOARD_WIDTH, BOARD_HEIGHT);
