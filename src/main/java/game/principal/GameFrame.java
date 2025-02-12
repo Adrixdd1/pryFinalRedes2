@@ -10,7 +10,7 @@ public class GameFrame extends JFrame {
     protected SnakeGame game;
     protected GamePanel panel;
     private GameLoop loop;
-    private final long frequency = 75; // Frecuencia de actualización en milisegundos
+    private final long frequency = 100; // Frecuencia de actualización en milisegundos
 
     public GameFrame(boolean isDefaultKeyListener) {
         if(isDefaultKeyListener){  

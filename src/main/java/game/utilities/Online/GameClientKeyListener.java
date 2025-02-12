@@ -1,9 +1,7 @@
-package game.utilities;
+package game.utilities.Online;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
 public class GameClientKeyListener extends KeyAdapter {

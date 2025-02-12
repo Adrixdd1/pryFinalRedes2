@@ -1,6 +1,6 @@
 package connection;
 
-import connection.snakeC.SnakeLANClientGame;
+import game.Online.SnakeLANClientGame;
 
 import java.io.*;
 import java.net.*;

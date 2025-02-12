@@ -1,6 +1,6 @@
-package game.utilities;
+package game.utilities.Online;
 
-import game.principal.ClientGamePanel;
+import game.Online.ClientGamePanel;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 

@@ -1,7 +1,8 @@
-package game.principal;
+package game.Online;
 
-import game.utilities.SnakeGameInfo;
-import game.utilities.SoftSnakePlayer;
+import game.principal.SnakeGame;
+import game.utilities.Online.SnakeGameInfo;
+import game.utilities.Online.SoftSnakePlayer;
 
 import javax.swing.*;
 import java.awt.*;

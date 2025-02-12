@@ -1,7 +1,8 @@
 package game.principal;
 
 import connection.ServerThread;
-import connection.snakeC.SnakeLANClientGame;
+import game.Online.SnakeLANClientGame;
+import game.utilities.Online.Sala;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StartScreen extends JFrame {
+    private Thread discovery;
     private ServerThread serverThread;
     private JTextField nombreField;
     private JButton btnCrearSala;
@@ -99,7 +101,8 @@ public class StartScreen extends JFrame {
 
             // Mostrar el panel de sala con los jugadores conectados e iniciar juego
             salaVisualPanel.setVisible(true);
-            // Aquí podrías actualizar la lista de jugadores conforme se conecten
+            jugadoresList = new JList<>(serverThread.jugadoresModel);
+            salaVisualPanel.add(new JScrollPane(jugadoresList));
 
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error al crear sala: " + e.getMessage());
@@ -109,7 +112,7 @@ public class StartScreen extends JFrame {
     private void iniciarJuego() {
         JOptionPane.showMessageDialog(this, "Iniciando el juego...");
         this.serverThread.gameReady=true;
-
+        this.dispose();
     }
 
     private void unirseASala(Sala sala) {
@@ -117,14 +120,16 @@ public class StartScreen extends JFrame {
             JOptionPane.showMessageDialog(this, "Conectando a " + sala.getNombre() + " en " + sala.getDireccionIP().getHostAddress());
             Socket socket = new Socket(sala.getDireccionIP(), 12345);
             new SnakeLANClientGame(socket).setVisible(true);
-            dispose();
+            discovery.interrupt();
+            this.dispose();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error al conectar: " + e.getMessage());
         }
     }
 
     private void mostrarSalasDisponibles() {
-        new Thread(this::detectarSalas).start();
+        discovery = new Thread(this::detectarSalas);
+        discovery.start();
         JDialog dialog = new JDialog(this, "Salas Disponibles", true);
         dialog.setSize(300, 200);
         dialog.setLocationRelativeTo(this);
@@ -148,12 +153,16 @@ public class StartScreen extends JFrame {
     }
 
     private void detectarSalas() {
+        boolean buscar = true;
         try (DatagramSocket socket = new DatagramSocket(9800, InetAddress.getByName("0.0.0.0"))) {
             socket.setBroadcast(true);
             byte[] buffer = new byte[256];
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
-            while (true) {
+            while (buscar) {
+                if(Thread.interrupted()){
+                    buscar=false;
+                }
                 socket.receive(packet);
                 String mensaje = new String(packet.getData(), 0, packet.getLength());
                 //System.out.println("Mensaje recibido: " + mensaje);
@@ -177,29 +186,5 @@ public class StartScreen extends JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-}
-
-
-class Sala {
-    private String nombre;
-    private InetAddress direccionIP;
-
-    public Sala(String nombre, InetAddress direccionIP) {
-        this.nombre = nombre;
-        this.direccionIP = direccionIP;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public InetAddress getDireccionIP() {
-        return direccionIP;
-    }
-
-    @Override
-    public String toString() {
-        return "Sala: " + nombre + " (" + direccionIP.getHostAddress() + ")";
     }
 }

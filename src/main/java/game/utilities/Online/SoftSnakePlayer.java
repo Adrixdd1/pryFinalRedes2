@@ -1,4 +1,4 @@
-package game.utilities;
+package game.utilities.Online;
 
 import java.awt.*;
 import java.io.Serializable;
