@@ -81,14 +81,13 @@ public class SnakeLANGame extends GameFrame {
                             SnakeGameInfo info = getGameInfo();
                             out.writeObject(info);
                             out.flush();
-                            Thread.sleep(10);
+                            Thread.sleep(30);
                         }
 
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }).start();
-                // Hilo para recibir comandos
                 String command;
                 while ((command = in.readLine()) != null) {
                     switch (playerId) {
