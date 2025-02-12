@@ -6,7 +6,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import game.principal.GameFrame;
 import game.principal.SnakeGame;
@@ -49,14 +52,17 @@ public class SnakeLANGame extends GameFrame {
         boolean algo = true;
         game.startGame(algo);
         game.getSnake1().setActive(true);
-        for (ClientHandler client:clients){
-            switch (client.playerId){
-                case 2:game.getSnake2().setActive(true);
-                break;
-                case 3:game.getSnake3().setActive(true);
-                break;
-                case 4:game.getSnake4().setActive(true);
-                break;
+        for (ClientHandler client : clients) {
+            switch (client.playerId) {
+                case 2:
+                    game.getSnake2().setActive(true);
+                    break;
+                case 3:
+                    game.getSnake3().setActive(true);
+                    break;
+                case 4:
+                    game.getSnake4().setActive(true);
+                    break;
             }
         }
         game.setGameOver(false);
@@ -85,7 +91,7 @@ public class SnakeLANGame extends GameFrame {
                             out.writeObject(info);
                             out.flush();
                             // Pausa breve para controlar la frecuencia de actualización
-                            Thread.sleep(10);
+                            Thread.sleep(50);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

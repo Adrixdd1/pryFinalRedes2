@@ -26,11 +26,8 @@ public class SnakeGame {
         food = new Point(200, 100);
         snake1 = new SnakePlayer(new Point(320, 240), "RIGHT", Color.BLUE, STEP_SIZE, BOARD_WIDTH, BOARD_HEIGHT);
         snake2 = new SnakePlayer(new Point(320, 300), "LEFT", Color.GREEN, STEP_SIZE, BOARD_WIDTH, BOARD_HEIGHT);
-        snake2.setActive(false);
         snake3 = new SnakePlayer(new Point(320, 200), "UP", Color.YELLOW, STEP_SIZE, BOARD_WIDTH, BOARD_HEIGHT);
-        snake3.setActive(false);
         snake4 = new SnakePlayer(new Point(320, 340), "DOWN", Color.MAGENTA, STEP_SIZE, BOARD_WIDTH, BOARD_HEIGHT);
-        snake4.setActive(false);
         gameOver = true;
     }
     public void startGame() {
@@ -100,12 +97,14 @@ public class SnakeGame {
     private void peroSiChocoONeh() {
         SnakePlayer[] snakes = {snake1, snake2, snake3, snake4};
         for (int i = 0; i < snakes.length; i++) {
-            Point head = snakes[i].getHead();
-            for (int j = 0; j < snakes.length; j++) {
-                if (i != j) {
-                    if (snakes[j].getBody().contains(head)) {
-                        gameOver = true;
-                        return;
+            if(snakes[i].isActive()){
+                Point head = snakes[i].getHead();
+                for (int j = 0; j < snakes.length; j++) {
+                    if (i != j&&snakes[j].isActive()) {
+                        if (snakes[j].getBody().contains(head)) {
+                            gameOver = true;
+                            return;
+                        }
                     }
                 }
             }
