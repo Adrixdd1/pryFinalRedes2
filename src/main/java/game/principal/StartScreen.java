@@ -1,15 +1,36 @@
 package game.principal;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+
 import connection.ServerThread;
 import game.Online.SnakeLANClientGame;
 import game.utilities.Online.Sala;
-
-import javax.swing.*;
-import java.awt.*;
-import java.net.*;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class StartScreen extends JFrame {
     private Thread discovery;
@@ -112,16 +133,22 @@ public class StartScreen extends JFrame {
     private void iniciarJuego() {
         JOptionPane.showMessageDialog(this, "Iniciando el juego...");
         this.serverThread.gameReady=true;
-        this.dispose();
+        //this.dispose();
+        this.setVisible(false);
     }
 
     private void unirseASala(Sala sala) {
         try {
             JOptionPane.showMessageDialog(this, "Conectando a " + sala.getNombre() + " en " + sala.getDireccionIP().getHostAddress());
             Socket socket = new Socket(sala.getDireccionIP(), 12345);
-            new SnakeLANClientGame(socket).setVisible(true);
+           /* new SnakeLANClientGame(socket).setVisible(true);
             discovery.interrupt();
-            this.dispose();
+            this.dispose();*/
+            SnakeLANClientGame clientGame = new SnakeLANClientGame(socket);
+            clientGame.setStartScreen(this); // Pasar referencia
+            clientGame.setVisible(true);
+            discovery.interrupt();
+        this.setVisible(false);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error al conectar: " + e.getMessage());
         }

@@ -1,14 +1,26 @@
 package game.Online;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.Socket;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
+
 import game.principal.SnakeGame;
+import game.principal.StartScreen;
 import game.utilities.Online.ClientGameLoop;
 import game.utilities.Online.GameClientKeyListener;
 import game.utilities.Online.SnakeGameInfo;
-
-import javax.swing.*;
-import java.awt.*;
-import java.io.*;
-import java.net.Socket;
 
 public class SnakeLANClientGame extends JFrame {
     private ObjectInputStream in;
@@ -17,6 +29,7 @@ public class SnakeLANClientGame extends JFrame {
     private Socket socket;
     private DefaultListModel<String> jugadoresModel;
     private JList<String> jugadoresList;
+    private StartScreen startScreen;
 
     public SnakeLANClientGame(Socket socket) {
         this.socket = socket;
@@ -25,14 +38,27 @@ public class SnakeLANClientGame extends JFrame {
             this.in = new ObjectInputStream(socket.getInputStream());
             // Inicializa el PrintWriter para enviar datos, si lo necesitas
             this.out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
-
+            addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                        dispose();
+                        if (startScreen != null) {
+                            startScreen.setVisible(true);
+                        }
+                    }
+                    // ... manejo de otras teclas ...
+                }
+            });
         }catch (Exception e){
             e.printStackTrace();
         }
         initWaitingScreen();
         new Thread(this::escucharServidor).start(); // Iniciar escucha de mensajes del servidor
     }
-
+public void setStartScreen(StartScreen startScreen) {
+        this.startScreen = startScreen;
+    }
     // Inicializa la pantalla de espera con la lista de jugadores
     private void initWaitingScreen() {
         setTitle("Esperando jugadores...");

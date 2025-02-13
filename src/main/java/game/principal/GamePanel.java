@@ -4,13 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
 
-import javax.swing.AbstractAction;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 
 public class GamePanel extends JPanel {
     private SnakeGame game;
@@ -22,20 +17,7 @@ public class GamePanel extends JPanel {
     public GamePanel(SnakeGame game) {
         this.game = game;
         setFocusable(true);
-        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke("ESCAPE"), "exitToStart");
-    getActionMap().put("exitToStart", new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            // Verificamos que el juego haya terminado para permitir la salida
-            if (game.isGameOver()) {
-                // Creamos y mostramos la pantalla de inicio
-                new StartScreen().setVisible(true);
-                // Cerramos la ventana actual del juego
-                SwingUtilities.getWindowAncestor(GamePanel.this).dispose();
-            }
-        }
-    });
+        
     }
 
     @Override
