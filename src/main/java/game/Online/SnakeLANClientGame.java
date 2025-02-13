@@ -77,6 +77,7 @@ public void setStartScreen(StartScreen startScreen) {
                         break;
                     }
                 }
+                
                 if (mensaje instanceof String) {
                     String msg = (String) mensaje;
 
