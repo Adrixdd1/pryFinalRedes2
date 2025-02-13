@@ -28,7 +28,8 @@ public class SnakeLANClientGame extends JFrame {
     private DefaultListModel<String> jugadoresModel;
     private JList<String> jugadoresList;
     protected  StartScreen startScreen;
-
+    private ClientGamePanel gamePanel;
+    private SnakeGameInfo game;
     public SnakeLANClientGame(Socket socket) {
         this.socket = socket;
         try {
@@ -75,18 +76,21 @@ public void setStartScreen(StartScreen startScreen) {
                             startScreen.setVisible(true);
                         });
                         break;
-                    }
-                }
-                if (mensaje instanceof String) {
-                    String msg = (String) mensaje;
-
-                    if (!msg.equals("START")) {
-                        actualizarListaJugadores(msg);
-                    }else{
-                        // Al recibir "START", leer el siguiente objeto que se espera sea SnakeGameInfo
+                    } else if (msg.equals("START")) {
+                        // Recibir información inicial del juego
                         SnakeGameInfo info = (SnakeGameInfo) in.readObject();
                         iniciarJuego(info);
-                        break;
+                    } else {
+                        actualizarListaJugadores(msg);
+                    }
+                } else if (mensaje instanceof SnakeGameInfo) {
+                    // Si el juego ya inició, actualizar el panel
+                    if (gamePanel != null) { 
+                        gamePanel.setGameInfo((SnakeGameInfo) mensaje);
+                        gamePanel.repaint();
+                    } else {
+                        // Iniciar juego si es el primer mensaje
+                        iniciarJuego((SnakeGameInfo) mensaje);
                     }
                 }
             }
@@ -114,7 +118,7 @@ public void setStartScreen(StartScreen startScreen) {
         SwingUtilities.invokeLater(() -> {
             // Elimina la UI de espera
             getContentPane().removeAll();
-
+            gamePanel = new ClientGamePanel(info);
             // Configuración de la ventana para el juego
             setTitle("Snake - Client");
             setSize(SnakeGame.BOARD_WIDTH, SnakeGame.BOARD_HEIGHT);
@@ -138,5 +142,8 @@ public void setStartScreen(StartScreen startScreen) {
                 loop.start();
             }).start();
         });
+    }
+    public void setGameInfo(SnakeGameInfo gameInfo) {
+        this.game = gameInfo;
     }
 }
