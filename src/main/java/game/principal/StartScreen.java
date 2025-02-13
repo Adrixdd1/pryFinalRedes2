@@ -111,7 +111,8 @@ public class StartScreen extends JFrame {
             return;
         }
         try {
-            serverThread = new ServerThread(12345, nombre);
+            serverThread = new ServerThread(12345, nombre, this);
+            
             serverThread.start();
             JOptionPane.showMessageDialog(this, "Sala creada. Esperando jugadores...");
 

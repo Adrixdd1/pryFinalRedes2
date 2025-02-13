@@ -2,8 +2,6 @@ package game.Online;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
@@ -29,7 +27,7 @@ public class SnakeLANClientGame extends JFrame {
     private Socket socket;
     private DefaultListModel<String> jugadoresModel;
     private JList<String> jugadoresList;
-    private StartScreen startScreen;
+    protected  StartScreen startScreen;
 
     public SnakeLANClientGame(Socket socket) {
         this.socket = socket;
@@ -38,18 +36,7 @@ public class SnakeLANClientGame extends JFrame {
             this.in = new ObjectInputStream(socket.getInputStream());
             // Inicializa el PrintWriter para enviar datos, si lo necesitas
             this.out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
-            addKeyListener(new KeyAdapter() {
-                @Override
-                public void keyPressed(KeyEvent e) {
-                    if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                        dispose();
-                        if (startScreen != null) {
-                            startScreen.setVisible(true);
-                        }
-                    }
-                    // ... manejo de otras teclas ...
-                }
-            });
+            
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -58,6 +45,9 @@ public class SnakeLANClientGame extends JFrame {
     }
 public void setStartScreen(StartScreen startScreen) {
         this.startScreen = startScreen;
+    }
+    public StartScreen getStartScreen() {
+        return startScreen;
     }
     // Inicializa la pantalla de espera con la lista de jugadores
     private void initWaitingScreen() {
@@ -77,6 +67,16 @@ public void setStartScreen(StartScreen startScreen) {
         try {
             while (true) {
                 Object mensaje = in.readObject();
+                if (mensaje instanceof String) {
+                    String msg = (String) mensaje;
+                    if (msg.equals("SERVER_CLOSED")) {
+                        SwingUtilities.invokeLater(() -> {
+                            this.dispose();
+                            startScreen.setVisible(true);
+                        });
+                        break;
+                    }
+                }
                 if (mensaje instanceof String) {
                     String msg = (String) mensaje;
 
@@ -123,7 +123,7 @@ public void setStartScreen(StartScreen startScreen) {
 
             ClientGamePanel panel;
             panel = new ClientGamePanel(info);
-            panel.addKeyListener(new GameClientKeyListener(out));
+            panel.addKeyListener(new GameClientKeyListener(out,this));
 
             add(panel);
             revalidate();

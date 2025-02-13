@@ -4,18 +4,26 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.PrintWriter;
 
+import game.Online.SnakeLANClientGame;
+
 public class GameClientKeyListener extends KeyAdapter {
     private PrintWriter salida;
+     private SnakeLANClientGame clientGame;
 
-    public GameClientKeyListener(PrintWriter salida) {
+
+    public GameClientKeyListener(PrintWriter salida, SnakeLANClientGame clientGame) {
         this.salida = salida;
+        this.clientGame = clientGame;
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
         // Tecla para salir
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            System.exit(0);
+            salida.println("CLIENT_DISCONNECT");
+            salida.flush();
+            clientGame.dispose();
+            clientGame.getStartScreen().setVisible(true); 
         }
 
         // Controles para el jugador 2 (WASD)

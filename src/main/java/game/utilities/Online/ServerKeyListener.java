@@ -1,10 +1,10 @@
 package game.utilities.Online;
 
-import game.Online.SnakeLANGame;
-import game.principal.SnakeGame;
-
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+
+import game.Online.SnakeLANGame;
+import game.principal.SnakeGame;
 
 public class ServerKeyListener extends KeyAdapter {
     private SnakeGame game;
@@ -19,7 +19,9 @@ public class ServerKeyListener extends KeyAdapter {
     public void keyPressed(KeyEvent e) {
         // Tecla para salir
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            System.exit(0);
+            gameFrame.broadcastServerClosed();
+            gameFrame.dispose();
+            gameFrame.getStartScreen().setVisible(true);
         }
         //Controles para el jugador 1 (flechas)
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {

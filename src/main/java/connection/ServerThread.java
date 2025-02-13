@@ -11,6 +11,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.SwingUtilities;
 
 import game.Online.SnakeLANGame;
+import game.principal.StartScreen;
 public class ServerThread extends Thread {
     private final int PORT;
     private final String nombre;
@@ -18,13 +19,15 @@ public class ServerThread extends Thread {
     public boolean gameReady;
     private ServerSocket serverSocket;
     public DefaultListModel<String> jugadoresModel = new DefaultListModel<>();
+    private final StartScreen startScreen;
 
 
-    public ServerThread(int port, String nombre) throws IOException {
+    public ServerThread(int port, String nombre,StartScreen startScreen) throws IOException {
         this.PORT = port;
         this.nombre = nombre;
         this.clients = new ArrayList<>();
         this.gameReady = false;
+        this.startScreen = startScreen;
     }
 
     @Override
@@ -98,6 +101,7 @@ public class ServerThread extends Thread {
     private void iniciarJuego() {
         System.out.println("Iniciando juego con " + clients.size() + " jugadores.");
         SnakeLANGame game = new SnakeLANGame();
+        game.setStartScreen(startScreen);
         int playerId = 2; // IDs empiezan en 2
         for (DatosCliente client : clients) {
             System.out.println("agregado cliente "+playerId);

@@ -6,13 +6,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import game.principal.GameFrame;
 import game.principal.SnakeGame;
+import game.principal.StartScreen;
 import game.utilities.GameKeyListener;
 import game.utilities.Online.ServerKeyListener;
 import game.utilities.Online.SnakeGameInfo;
@@ -20,13 +18,28 @@ import game.utilities.Online.SoftSnakePlayer;
 
 public class SnakeLANGame extends GameFrame {
     private List<ClientHandler> clients = new ArrayList<>();
-
+    protected StartScreen startScreen;
     public SnakeLANGame() {
         super(false);
         panel.addKeyListener(new ServerKeyListener(super.game,this));
         panel.removeKeyListener(new GameKeyListener(game));
     }
-
+    public void setStartScreen(StartScreen startScreen) {
+        this.startScreen = startScreen;
+    }
+    public StartScreen getStartScreen() {
+        return startScreen;
+    }
+    public void broadcastServerClosed() {
+        for (ClientHandler client : clients) {
+            try {
+                client.out.writeObject("SERVER_CLOSED");
+                client.out.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     public void addClient(int playerId,ObjectOutputStream out, InputStreamReader in) {
         ClientHandler client = new ClientHandler(playerId,out,in);
         clients.add(client);
@@ -109,6 +122,16 @@ public class SnakeLANGame extends GameFrame {
                         case 4:
                             game.getSnake4().setDirection(command);
                             break;
+                    }
+                    if ("CLIENT_DISCONNECT".equals(command)) {
+                        // Marcar jugador como inactivo
+                        switch (playerId) {
+                            case 2: game.getSnake2().setActive(false); break;
+                            case 3: game.getSnake3().setActive(false); break;
+                            case 4: game.getSnake4().setActive(false); break;
+                        }
+                        clients.remove(this);
+                        break;
                     }
                 }
             } catch (IOException e) {
